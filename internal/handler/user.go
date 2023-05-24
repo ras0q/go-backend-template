@@ -1,9 +1,12 @@
 package handler
 
 import (
+	"fmt"
 	"go-backend-sample/internal/repository"
 	"net/http"
 
+	vd "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 )
@@ -52,6 +55,15 @@ func (h *Handler) CreateUser(c echo.Context) error {
 	req := new(CreateUserRequest)
 	if err := c.Bind(req); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").SetInternal(err)
+	}
+
+	err := vd.ValidateStruct(
+		req,
+		vd.Field(&req.Name, vd.Required),
+		vd.Field(&req.Email, vd.Required, is.Email),
+	)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("invalid request body: %w", err)).SetInternal(err)
 	}
 
 	params := repository.CreateUserParams{

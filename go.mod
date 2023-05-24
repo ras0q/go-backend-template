@@ -3,6 +3,7 @@ module go-backend-sample // NOTE: github.com/ORGANIZATION/REPO_NAME などが好
 go 1.20
 
 require (
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/go-sql-driver/mysql v1.7.1
 	github.com/google/uuid v1.3.0
 	github.com/jmoiron/sqlx v1.3.5
@@ -10,6 +11,7 @@ require (
 )
 
 require (
+	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
