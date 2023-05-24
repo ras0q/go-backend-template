@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 8080:8080
+    environment:
+      APP_ADDR: :8080
+      DB_USER: root
+      DB_PASS: pass
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_NAME: app
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:latest
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: app
+    expose:
+      - "3306"
+    healthcheck:
+      test: mysql --user=root --password=pass --execute "SHOW DATABASES;"
+      interval: 1s
+      timeout: 10s
+      retries: 30
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      PMA_USER: root
+      PMA_PASSWORD: pass
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - 8081:80
+    depends_on:
+      mysql:
+        condition: service_healthy
