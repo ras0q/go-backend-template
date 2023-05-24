@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-backend-sample/repository"
+	"go-backend-sample/internal/repository"
 	"net/http"
 
 	"github.com/google/uuid"

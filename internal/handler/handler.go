@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"go-backend-sample/repository"
+	"go-backend-sample/internal/repository"
 
 	"github.com/labstack/echo/v4"
 )

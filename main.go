@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"go-backend-sample/handler"
-	"go-backend-sample/repository"
+	"go-backend-sample/internal/handler"
+	"go-backend-sample/internal/repository"
 	"os"
 
 	"github.com/go-sql-driver/mysql"
