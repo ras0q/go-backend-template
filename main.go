@@ -34,15 +34,21 @@ func main() {
 	e.Use(middleware.Recover())
 	e.Use(middleware.Logger())
 
-	// dependencies
+	// connect to database
 	db, err := sqlx.Connect("mysql", dbConfig.FormatDSN())
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
-	repo := repository.New(db)
-	h := handler.New(repo)
+	defer db.Close()
 
-	// routes
+	// setup repository
+	repo := repository.New(db)
+	if err := repo.SetupTables(); err != nil {
+		e.Logger.Fatal(err)
+	}
+
+	// setup routes
+	h := handler.New(repo)
 	api := e.Group("/api")
 	h.SetupRoutes(api)
 
