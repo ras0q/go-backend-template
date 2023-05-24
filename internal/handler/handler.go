@@ -17,6 +17,13 @@ func New(repo *repository.Repository) *Handler {
 }
 
 func (h *Handler) SetupRoutes(api *echo.Group) {
+	// ping API
+	pingAPI := api.Group("/ping")
+	{
+		pingAPI.GET("", h.Ping)
+	}
+
+	// user API
 	userAPI := api.Group("/users")
 	{
 		userAPI.GET("", h.GetUsers)
