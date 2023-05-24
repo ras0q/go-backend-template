@@ -1,30 +1,13 @@
 package main
 
 import (
-	"fmt"
 	"go-backend-sample/internal/handler"
+	"go-backend-sample/internal/pkg/config"
 	"go-backend-sample/internal/repository"
-	"os"
 
-	"github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-)
-
-var (
-	appAddr  = getEnv("APP_ADDR", ":8080")
-	dbConfig = mysql.Config{
-		User:   getEnv("DB_USER", "root"),
-		Passwd: getEnv("DB_PASSWORD", "pass"),
-		Net:    getEnv("DB_NET", "tcp"),
-		Addr: fmt.Sprintf(
-			"%s:%s",
-			getEnv("DB_HOST", "localhost"),
-			getEnv("DB_PORT", "3306"),
-		),
-		DBName: getEnv("DB_NAME", "backend_sample"),
-	}
 )
 
 func main() {
@@ -35,7 +18,7 @@ func main() {
 	e.Use(middleware.Logger())
 
 	// connect to database
-	db, err := sqlx.Connect("mysql", dbConfig.FormatDSN())
+	db, err := sqlx.Connect("mysql", config.MySQL().FormatDSN())
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
@@ -52,14 +35,5 @@ func main() {
 	api := e.Group("/api")
 	h.SetupRoutes(api)
 
-	e.Logger.Fatal(e.Start(appAddr))
-}
-
-func getEnv(key, defaultValue string) string {
-	v, ok := os.LookupEnv(key)
-	if !ok {
-		return defaultValue
-	}
-
-	return v
+	e.Logger.Fatal(e.Start(config.AppAddr()))
 }
