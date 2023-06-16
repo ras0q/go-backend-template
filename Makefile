@@ -1,7 +1,7 @@
 SHELL    := /bin/bash
 APP_NAME := $(shell basename $(PWD))
 GO_FILES := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
-GO_TEST_FLAGS := -v -cover -race -shuffle
+GO_TEST_FLAGS := -v -cover -race -shuffle=on
 
 .PHONY: help
 help: ## Display this help
