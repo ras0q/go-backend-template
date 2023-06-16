@@ -7,14 +7,16 @@
 
 - 最低限[Docker](https://www.docker.com/) ([Docker Compose](https://docs.docker.com/compose/))が必要です。
 - linter, formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
-- 開発環境では[cosmtrek/air](https://github.com/cosmtrek/air)を使ったホットリロード開発が可能です。
+- 開発環境では[cosmtrek/air](https://github.com/cosmtrek/air)を使ったホットリロード開発が可能です
+- makeコマンドのターゲット一覧とその説明は`make help`で確認できます
 
 ### 開発環境の実行
 
 ```sh
-docker compose up --build
+make dev
 ```
 
+API、DB、DB管理画面が起動します。
 各コンテナが起動したら、以下のURLにアクセスすることができます
 
 - <http://localhost:8080/> (API)
@@ -22,16 +24,22 @@ docker compose up --build
 
 ### テストの実行
 
-単体テスト
+全てのテスト
 
 ```sh
-go test ./intenal/...
+make test
 ```
 
-結合テスト
+単体テストのみ
 
 ```sh
-go test ./integration/...
+make test-unit
+```
+
+結合テストのみ
+
+```sh
+make test-integration
 ```
 
 ## 構成
