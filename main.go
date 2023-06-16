@@ -32,8 +32,8 @@ func main() {
 
 	// setup routes
 	h := handler.New(repo)
-	api := e.Group("/api")
-	h.SetupRoutes(api)
+	v1API := e.Group("/api/v1")
+	h.SetupRoutes(v1API)
 
 	e.Logger.Fatal(e.Start(config.AppAddr()))
 }
