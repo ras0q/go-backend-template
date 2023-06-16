@@ -1,6 +1,7 @@
 SHELL    := /bin/bash
 APP_NAME := $(shell basename $(PWD))
 GO_FILES := $(shell find . -type f -name '*.go' -not -path "./vendor/*")
+GO_TEST_FLAGS := -v -cover -race -shuffle
 
 .PHONY: help
 help: ## Display this help
@@ -23,8 +24,8 @@ test: test-unit test-integration ## Run all the tests
 
 .PHONY: test-unit
 test-unit: ## Run the unit tests
-	go test -v -cover . ./internal/...
+	go test $(GO_TEST_FLAGS) . ./internal/...
 
 .PHONY: test-integration
 test-integration: ## Run the integration tests
-	go test -v -cover ./integration/...
+	go test $(GO_TEST_FLAGS) ./integration/...
