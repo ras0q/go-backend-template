@@ -64,7 +64,7 @@ func TestMain(m *testing.M) {
 	}
 	h = handler.New(r)
 	e = echo.New()
-	h.SetupRoutes(e.Group("/api"))
+	h.SetupRoutes(e.Group("/api/v1"))
 
 	log.Println("start integration test")
 	m.Run()
