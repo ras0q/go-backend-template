@@ -29,3 +29,7 @@ test-unit: ## Run the unit tests
 .PHONY: test-integration
 test-integration: ## Run the integration tests
 	go test $(GO_TEST_FLAGS) ./integration/...
+
+.PHONY: lint
+lint: ## Run the linter
+	golangci-lint run --timeout=5m --fix ./...
