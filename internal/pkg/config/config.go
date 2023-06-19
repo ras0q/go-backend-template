@@ -30,6 +30,8 @@ func MySQL() *mysql.Config {
 			getEnv("DB_HOST", "localhost"),
 			getEnv("DB_PORT", "3306"),
 		),
-		DBName: getEnv("DB_NAME", "backend_sample"),
+		DBName:               getEnv("DB_NAME", "backend_sample"),
+		Collation:            "utf8mb4_general_ci",
+		AllowNativePasswords: true,
 	}
 }
