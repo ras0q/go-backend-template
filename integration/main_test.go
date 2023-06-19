@@ -2,6 +2,7 @@ package integration
 
 import (
 	"go-backend-sample/internal/handler"
+	"go-backend-sample/internal/migration"
 	"go-backend-sample/internal/pkg/config"
 	"go-backend-sample/internal/repository"
 	"log"
@@ -57,11 +58,13 @@ func TestMain(m *testing.M) {
 		log.Fatal("connect to database container: ", err)
 	}
 
+	// migrate tables
+	if err := migration.MigrateTables(db.DB); err != nil {
+		log.Fatal("migrate tables: ", err)
+	}
+
 	// setup dependencies
 	r = repository.New(db)
-	if err := r.SetupTables(); err != nil {
-		log.Fatal("setup tables: ", err)
-	}
 	h = handler.New(r)
 	e = echo.New()
 	h.SetupRoutes(e.Group("/api/v1"))

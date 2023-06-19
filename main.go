@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-backend-sample/internal/handler"
+	"go-backend-sample/internal/migration"
 	"go-backend-sample/internal/pkg/config"
 	"go-backend-sample/internal/repository"
 
@@ -24,11 +25,13 @@ func main() {
 	}
 	defer db.Close()
 
-	// setup repository
-	repo := repository.New(db)
-	if err := repo.SetupTables(); err != nil {
+	// migrate tables
+	if err := migration.MigrateTables(db.DB); err != nil {
 		e.Logger.Fatal(err)
 	}
+
+	// setup repository
+	repo := repository.New(db)
 
 	// setup routes
 	h := handler.New(repo)
