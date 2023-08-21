@@ -22,15 +22,15 @@ services:
         condition: service_healthy
 
   mysql:
-    image: mysql:latest
-    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    image: mariadb:latest
+    command: mariadbd --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_DATABASE: app
     expose:
       - "3306"
     healthcheck:
-      test: mysql --user=root --password=pass --execute "SHOW DATABASES;"
+      test: mariadb --user=root --password=pass --execute "SHOW DATABASES;"
       interval: 1s
       timeout: 10s
       retries: 30
