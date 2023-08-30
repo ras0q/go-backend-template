@@ -1,12 +1,9 @@
 package main
 
 import (
-	"go-backend-sample/internal/handler"
-	"go-backend-sample/internal/migration"
-	"go-backend-sample/internal/pkg/config"
-	"go-backend-sample/internal/repository"
+	"go-backend-sample/internal/model"
+	"os"
 
-	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -19,24 +16,20 @@ func main() {
 	e.Use(middleware.Logger())
 
 	// connect to database
-	db, err := sqlx.Connect("mysql", config.MySQL().FormatDSN())
+	err := model.Setup()
 	if err != nil {
 		e.Logger.Fatal(err)
 	}
-	defer db.Close()
 
-	// migrate tables
-	if err := migration.MigrateTables(db.DB); err != nil {
-		e.Logger.Fatal(err)
+	e.HideBanner = true
+	e.HidePort = true
+	e.Debug = true
+	e.GET("/", func(c echo.Context) error {
+		return c.String(200, "Hello, World!")
+	})
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
 	}
-
-	// setup repository
-	repo := repository.New(db)
-
-	// setup routes
-	h := handler.New(repo)
-	v1API := e.Group("/api/v1")
-	h.SetupRoutes(v1API)
-
-	e.Logger.Fatal(e.Start(config.AppAddr()))
+	e.Logger.Fatal(e.Start(":" + port))
 }
