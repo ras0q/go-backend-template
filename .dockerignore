@@ -1,8 +1,6 @@
-.git/
-.vscode/
-tmp/
-.dockerignore
-.gitignore
-.golangci.yml
-compose.yml
-Dockerfile
+*
+!integration/
+!internal/
+!go.mod
+!go.sum
+!main.go

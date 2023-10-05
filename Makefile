@@ -8,10 +8,6 @@ help: ## Display this help
 	@echo "Commands:"
 	@grep -E '^[a-z-]+:.*## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: dev
-dev: ## Run the development server with live-reload
-	docker compose up --build
-
 .PHONY: mod
 mod: ## Download the dependencies
 	go mod download

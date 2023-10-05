@@ -1,15 +1,12 @@
-version: '3'
+version: "3"
 
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes:
-      - ./main.go:/app/main.go
-      - ./internal:/app/internal
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
       APP_ADDR: :8080
       DB_USER: root
@@ -20,6 +17,10 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: ./
 
   mysql:
     image: mysql:latest
@@ -43,7 +44,7 @@ services:
       PMA_HOST: mysql
       PMA_PORT: 3306
     ports:
-      - 8081:80
+      - "8081:80"
     depends_on:
       mysql:
         condition: service_healthy

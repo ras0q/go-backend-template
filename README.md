@@ -5,19 +5,20 @@
 
 ## 使い方
 
-- 最低限[Docker](https://www.docker.com/) ([Docker Compose](https://docs.docker.com/compose/))が必要です。
+- 最低限[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)が必要です。
+  - [Compose Watch](https://docs.docker.com/compose/file-watch/)を使うため、Docker Composeのバージョンは2.22以上にしてください。
 - linter, formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
-- 開発環境では[cosmtrek/air](https://github.com/cosmtrek/air)を使ったホットリロード開発が可能です
 - makeコマンドのターゲット一覧とその説明は`make help`で確認できます
 
 ### 開発環境の実行
 
 ```sh
-make dev
+docker compose watch
 ```
 
 API、DB、DB管理画面が起動します。
-各コンテナが起動したら、以下のURLにアクセスすることができます
+各コンテナが起動したら、以下のURLにアクセスすることができます。
+Compose Watchにより、ソースコードの変更を検知して自動で再起動します。
 
 - <http://localhost:8080/> (API)
 - <http://localhost:8081/> (DBの管理画面)
