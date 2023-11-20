@@ -5,6 +5,7 @@
 
 ## 使い方
 
+- レポジトリを作成したら、モジュール名(現`go-backend-template`)を適宜変更してください。
 - 最低限[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)が必要です。
   - [Compose Watch](https://docs.docker.com/compose/file-watch/)を使うため、Docker Composeのバージョンは2.22以上にしてください。
 - linter, formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
