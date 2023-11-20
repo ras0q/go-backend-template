@@ -66,12 +66,10 @@ func (h *Handler) CreateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("invalid request body: %w", err)).SetInternal(err)
 	}
 
-	params := repository.CreateUserParams{
+	userID, err := h.repo.CreateUser(c.Request().Context(), repository.CreateUserParams{
 		Name:  req.Name,
 		Email: req.Email,
-	}
-
-	userID, err := h.repo.CreateUser(c.Request().Context(), params)
+	})
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 	}
