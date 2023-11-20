@@ -8,6 +8,14 @@
 - 最低限[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)が必要です。
   - [Compose Watch](https://docs.docker.com/compose/file-watch/)を使うため、Docker Composeのバージョンは2.22以上にしてください。
 - linter, formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
+  - VSCodeを使用する場合は`.vscode/settings.json`でlinterの設定を行ってください
+
+  ```json
+  {
+    "go.lintTool": "golangci-lint"
+  }
+  ```
+
 - makeコマンドのターゲット一覧とその説明は`make help`で確認できます
 
 ### 開発環境の実行
