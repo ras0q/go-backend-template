@@ -1,4 +1,4 @@
-# go-backend-sample
+# go-backend-template
 
 ハッカソンなど短期間でWebアプリを開発する際のバックエンドのGo実装例です。
 学習コストと開発コストを抑えることを目的としています。
