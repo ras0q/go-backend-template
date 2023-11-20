@@ -11,18 +11,18 @@ services:
       APP_ADDR: :8080
       DB_USER: root
       DB_PASS: pass
-      DB_HOST: mysql
+      DB_HOST: db
       DB_PORT: "3306"
       DB_NAME: app
     depends_on:
-      mysql:
+      db:
         condition: service_healthy
     develop:
       watch:
         - action: rebuild
           path: ./
 
-  mysql:
+  db:
     image: mysql:latest
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     environment:
@@ -41,5 +41,5 @@ services:
     ports:
       - "8081:8080"
     depends_on:
-      mysql:
+      db:
         condition: service_healthy
