@@ -68,7 +68,7 @@ make test-integration
   - `migration/`: DBマイグレーション
     - DBのスキーマを定義する
     - Tips: マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っている
-    - 初期化スキーマは`1_schema.sql`に記述し、運用開始後のスキーマ定義変更等は`2_add_user_age.sql`ように連番を振って記述する
+    - 初期化スキーマは`1_schema.sql`に記述し、運用開始後のスキーマ定義変更等は`2_add_user_age.sql`のように連番を振って記述する
       - Tips: Goでは1.16から[embed](https://pkg.go.dev/embed)パッケージを使ってバイナリにファイルを文字列として埋め込むことができる
   - `repository/`: DBアクセス
     - DBへのアクセス処理
