@@ -53,6 +53,7 @@ func TestMain(m *testing.M) {
 			return err
 		}
 		db = _db
+
 		return _db.Ping()
 	}); err != nil {
 		log.Fatal("connect to database container: ", err)
