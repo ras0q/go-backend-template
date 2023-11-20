@@ -21,17 +21,19 @@ func AppAddr() string {
 }
 
 func MySQL() *mysql.Config {
-	return &mysql.Config{
-		User:   getEnv("DB_USER", "root"),
-		Passwd: getEnv("DB_PASSWORD", "pass"),
-		Net:    getEnv("DB_NET", "tcp"),
-		Addr: fmt.Sprintf(
-			"%s:%s",
-			getEnv("DB_HOST", "localhost"),
-			getEnv("DB_PORT", "3306"),
-		),
-		DBName:               getEnv("DB_NAME", "app"),
-		Collation:            "utf8mb4_general_ci",
-		AllowNativePasswords: true,
-	}
+	c := mysql.NewConfig()
+
+	c.User = getEnv("DB_USER", "root")
+	c.Passwd = getEnv("DB_PASSWORD", "pass")
+	c.Net = getEnv("DB_NET", "tcp")
+	c.Addr = fmt.Sprintf(
+		"%s:%s",
+		getEnv("DB_HOST", "localhost"),
+		getEnv("DB_PORT", "3306"),
+	)
+	c.DBName = getEnv("DB_NAME", "app")
+	c.Collation = "utf8mb4_general_ci"
+	c.AllowNativePasswords = true
+
+	return c
 }
