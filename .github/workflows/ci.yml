@@ -73,6 +73,7 @@ jobs:
       - name: Dependabot metadata
         uses: dependabot/fetch-metadata@v1
         id: metadata
+      - uses: actions/checkout@v4
       - name: Enable automerge
         if: |
           steps.metadata.outputs.update-type == 'version-update:semver-patch' ||
