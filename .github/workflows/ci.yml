@@ -79,3 +79,5 @@ jobs:
           steps.metadata.outputs.update-type == 'version-update:semver-minor'
         run: |
           gh pr merge ${{ github.event.number }} --auto --merge
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
