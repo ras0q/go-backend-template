@@ -2,7 +2,7 @@ package integration
 
 import (
 	"encoding/json"
-	"go-backend-template/internal/handler"
+	"github.com/ras0q/go-backend-template/internal/handler"
 	"testing"
 
 	"github.com/google/uuid"

@@ -1,4 +1,4 @@
-module go-backend-template // NOTE: github.com/ORGANIZATION/REPO_NAME などが好ましい
+module github.com/ras0q/go-backend-template
 
 go 1.20
 

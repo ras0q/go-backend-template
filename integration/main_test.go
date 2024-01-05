@@ -1,10 +1,10 @@
 package integration
 
 import (
-	"go-backend-template/internal/handler"
-	"go-backend-template/internal/migration"
-	"go-backend-template/internal/pkg/config"
-	"go-backend-template/internal/repository"
+	"github.com/ras0q/go-backend-template/internal/handler"
+	"github.com/ras0q/go-backend-template/internal/migration"
+	"github.com/ras0q/go-backend-template/internal/pkg/config"
+	"github.com/ras0q/go-backend-template/internal/repository"
 	"log"
 	"net/http/httptest"
 	"strings"
