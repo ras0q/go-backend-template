@@ -75,7 +75,7 @@ jobs:
         id: metadata
       - name: Enable automerge
         if: |
-          steps.metadata.update-type == 'version-update:semver-patch' ||
-          steps.metadata.update-type == 'version-update:semver-minor'
+          steps.metadata.output.update-type == 'version-update:semver-patch' ||
+          steps.metadata.output.update-type == 'version-update:semver-minor'
         run: |
           gh pr merge ${{ github.event.number }} --auto --merge
