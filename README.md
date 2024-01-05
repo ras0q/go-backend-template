@@ -3,9 +3,18 @@
 ハッカソンなど短期間でWebアプリを開発する際のバックエンドのGo実装例です。
 学習コストと開発コストを抑えることを目的としています。
 
-## 使い方
+## プロジェクト作成方法
 
-- レポジトリを作成したら、モジュール名(現`github.com/ras0q/go-backend-template`)を適宜変更してください。
+GitHubの `Use this template` ボタンからレポジトリを作成するか、以下の`gonew`コマンドで作成できます。
+
+```sh
+go run golang.org/x/tools/cmd/gonew@latest github.com/ras0q/go-backend-template {{ project_name }}
+```
+
+※ GitHub Templateから作成した場合は別途モジュール名を変更することを推奨します。
+
+## 開発手順
+
 - 最低限[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)が必要です。
   - [Compose Watch](https://docs.docker.com/compose/file-watch/)を使うため、Docker Composeのバージョンは2.22以上にしてください。
 - linter, formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
