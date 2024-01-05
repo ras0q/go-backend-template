@@ -56,3 +56,26 @@ jobs:
         with:
           go-version-file: ./go.mod
       - run: make test-integration
+
+  dependabot-automerge:
+    name: Dependabot Automerge
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    needs:
+      - build
+      - lint
+      - test-unit
+      - test-integration
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Dependabot metadata
+        uses: dependabot/fetch-metadata@v1
+        id: metadata
+      - name: Enable automerge
+        if: |
+          steps.metadata.update-type == 'version-update:semver-patch' ||
+          steps.metadata.update-type == 'version-update:semver-minor'
+        run: |
+          gh pr merge ${{ github.event.number }} --auto --merge
