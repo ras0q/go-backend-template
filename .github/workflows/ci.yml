@@ -11,7 +11,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version-file: ./go.mod
@@ -24,7 +24,7 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version-file: ./go.mod
@@ -39,7 +39,7 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version-file: ./go.mod
@@ -51,7 +51,7 @@ jobs:
     needs:
       - build
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version-file: ./go.mod
