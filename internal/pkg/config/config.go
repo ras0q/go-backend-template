@@ -24,7 +24,7 @@ func MySQL() *mysql.Config {
 	c := mysql.NewConfig()
 
 	c.User = getEnv("DB_USER", "root")
-	c.Passwd = getEnv("DB_PASSWORD", "pass")
+	c.Passwd = getEnv("DB_PASS", "pass")
 	c.Net = getEnv("DB_NET", "tcp")
 	c.Addr = fmt.Sprintf(
 		"%s:%s",
