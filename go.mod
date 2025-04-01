@@ -2,11 +2,9 @@ module github.com/ras0q/go-backend-template
 
 go 1.22
 
-toolchain go1.22.0
-
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
-	github.com/go-sql-driver/mysql v1.9.0
+	github.com/go-sql-driver/mysql v1.9.1
 	github.com/google/go-cmp v0.7.0
 	github.com/google/uuid v1.6.0
 	github.com/jmoiron/sqlx v1.4.0
