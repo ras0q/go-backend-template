@@ -1,6 +1,8 @@
 module backend
 
-go 1.22
+go 1.24
+
+toolchain go1.24.2
 
 require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
