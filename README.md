@@ -1,5 +1,7 @@
 # go-backend-template
 
+<a href="https://xcfile.dev"><img src="https://xcfile.dev/badge.svg" alt="xc compatible" /></a>
+
 ハッカソンなど短期間でWebアプリを開発する際のバックエンドのGo実装例です。
 学習コストと開発コストを抑えることを目的としています。
 
