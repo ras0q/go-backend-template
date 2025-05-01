@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:latest as builder
+FROM golang:1.24 as builder
 
 WORKDIR /app
 
@@ -10,23 +10,24 @@ ENV GOARCH=amd64
 ENV GOCACHE=/root/.cache/go-build
 ENV GOMODCACHE=/go/pkg/mod
 
-RUN --mount=type=cache,target=${GOCACHE} \
+RUN \
+  --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=bind,source=go.mod,target=go.mod \
   --mount=type=bind,source=go.sum,target=go.sum \
   go mod download
 
-RUN --mount=type=cache,target=${GOCACHE} \
+RUN \
+  --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=bind,target=. \
-  go build -o /app/main
+  go build -o /usr/bin/server
 
-FROM gcr.io/distroless/static-debian11:latest
+# use `debug-nonroot` for debug shell access
+FROM gcr.io/distroless/static-debian11:nonroot
 
 WORKDIR /app
 
-COPY --from=builder /app/main /app/main
+COPY --from=builder /usr/bin/server /usr/bin/server
 
-USER nonroot:nonroot
-
-CMD ["/app/main"]
+CMD ["/usr/bin/server"]
