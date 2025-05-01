@@ -10,15 +10,15 @@ ENV GOARCH=amd64
 ENV GOCACHE=/root/.cache/go-build
 ENV GOMODCACHE=/go/pkg/mod
 
-COPY go.mod go.sum ./
 RUN --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
+  --mount=type=bind,source=go.mod,target=go.mod \
+  --mount=type=bind,source=go.sum,target=go.sum \
   go mod download
 
-COPY ./ ./
-# RUN --mount=type=cache,target=${GOMODCACHE} go build -o /app/main
 RUN --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
+  --mount=type=bind,target=. \
   go build -o /app/main
 
 FROM gcr.io/distroless/static-debian11:latest
