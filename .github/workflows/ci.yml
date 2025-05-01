@@ -15,8 +15,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - run: make mod
-      - run: make build
+      - name: Build with xc
+        run: go run github.com/joerdav/xc/cmd/xc@latest build
 
   lint:
     name: Lint
@@ -43,7 +43,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - run: make test-unit
+      - name: Unit test with xc
+        run: go run github.com/joerdav/xc/cmd/xc@latest test-unit
 
   test-integration:
     name: Integration Test
@@ -55,7 +56,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - run: make test-integration
+      - name: Integration test with xc
+        run: go run github.com/joerdav/xc/cmd/xc@latest test-integration
 
   dependabot-automerge:
     name: Dependabot Automerge
