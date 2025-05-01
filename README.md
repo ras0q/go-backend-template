@@ -26,9 +26,32 @@ go run golang.org/x/tools/cmd/gonew@latest github.com/ras0q/go-backend-template 
   }
   ```
 
-- makeコマンドのターゲット一覧とその説明は`make help`で確認できます
+## Tasks
 
-### 開発環境の実行
+開発に用いるコマンド一覧
+
+> [!TIP]
+> `xc` を使うことでこれらのコマンドを簡単に実行できます。
+> 詳細は以下のページをご覧ください。
+> - [xc](https://xcfile.dev)
+> - [MarkdownベースのGo製タスクランナー「xc」のススメ](https://zenn.dev/trap/articles/af32614c07214d)
+>
+> ```bash
+> go install github.com/joerdav/xc/cmd/xc@latest
+> ```
+
+### build
+
+アプリをビルドします。
+
+```sh
+go mod download
+go build -o ./$(basename $PWD)
+```
+
+### dev
+
+ホットリロードの開発環境を構築します。
 
 ```sh
 docker compose watch
@@ -41,24 +64,36 @@ Compose Watchにより、ソースコードの変更を検知して自動で再�
 - <http://localhost:8080/> (API)
 - <http://localhost:8081/> (DBの管理画面)
 
-### テストの実行
+### test
 
-全てのテスト
+全てのテストを実行します。
 
 ```sh
-make test
+go test -v -cover -race -shuffle=on ./...
 ```
 
-単体テストのみ
+### test-unit
+
+単体テストを実行します。
 
 ```sh
-make test-unit
+go test -v -cover -race -shuffle=on . ./internal/...
 ```
 
-結合テストのみ
+### test-integration
+
+結合テストを実行します。
 
 ```sh
-make test-integration
+go test -v -cover -race -shuffle=on ./integration/...
+```
+
+### lint
+
+Linter (golangci-lint) を実行します。
+
+```sh
+golangci-lint run --timeout=5m --fix ./...
 ```
 
 ## 構成
