@@ -122,18 +122,17 @@ golangci-lint run --timeout=5m --fix ./...
     - Tips: リクエストのバリデーションがしたい場合は↓のどちらかを使うと良い
       - [go-playground/validator](https://github.com/go-playground/validator)でタグベースのバリデーションをする
       - [go-ozzo/ozzo-validation](https://github.com/go-ozzo/ozzo-validation)でコードベースのバリデーションをする
-  - `migration/`: DBマイグレーション
+  - `repository/`: DBアクセス
+    - DBへのアクセス処理
+      - 引数のバリデーションは`handler/`に任せる
+- `pkg/`: 汎用パッケージ
+  - 複数パッケージから使いまわせるようにする
+  - `config/`: アプリ・DBの設定
+  - `database/`: DBの初期化、マイグレーション
     - DBのスキーマを定義する
     - Tips: マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っている
     - 初期化スキーマは`1_schema.sql`に記述し、運用開始後のスキーマ定義変更等は`2_add_user_age.sql`のように連番を振って記述する
       - Tips: Goでは1.16から[embed](https://pkg.go.dev/embed)パッケージを使ってバイナリにファイルを文字列として埋め込むことができる
-  - `repository/`: DBアクセス
-    - DBへのアクセス処理
-      - 引数のバリデーションは`handler/`に任せる
-  - `pkg/`: 汎用パッケージ
-    - 複数パッケージから使いまわせるようにする
-    - 例: `pkg/config/`: アプリ・DBの設定
-    - Tips: 外部にパッケージを公開したい場合は`internal/`の外に出しても良い
 - `integration_tests/`: 結合テスト
   - `internal/`の実装から実際にデータが取得できるかテストする
   - DBの立ち上げには[ory/dockertest](https://github.com/ory/dockertest)を使っている

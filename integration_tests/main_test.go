@@ -3,7 +3,7 @@ package integration_tests
 import (
 	"backend/cmd/server/injector"
 	"backend/pkg/config"
-	"backend/pkg/migration"
+	"backend/pkg/database"
 	"log"
 	"testing"
 
@@ -42,19 +42,16 @@ func TestMain(m *testing.M) {
 
 	var db *sqlx.DB
 	if err := pool.Retry(func() error {
-		db, err = sqlx.Connect("mysql", mysqlConfig.FormatDSN())
+		_db, err := database.Setup(mysqlConfig)
 		if err != nil {
 			return err
 		}
 
-		return db.Ping()
+		db = _db
+
+		return nil
 	}); err != nil {
 		log.Fatal("connect to database container: ", err)
-	}
-
-	// migrate tables
-	if err := migration.MigrateTables(db.DB); err != nil {
-		log.Fatal("migrate tables: ", err)
 	}
 
 	// setup dependencies
