@@ -48,8 +48,9 @@ go run golang.org/x/tools/cmd/gonew@latest github.com/ras0q/go-backend-template 
 アプリをビルドします。
 
 ```sh
+CMD=server
 go mod download
-go build -o ./$(basename $PWD)
+go build -o ./bin/${CMD} ./cmd/${CMD}
 ```
 
 ### dev
