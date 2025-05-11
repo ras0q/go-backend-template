@@ -6,23 +6,18 @@ import (
 	"backend/internal/pkg/config"
 	"backend/internal/repository"
 	"log"
-	"net/http/httptest"
-	"strings"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 	"github.com/ory/dockertest/v3"
 )
 
 var (
-	db        *sqlx.DB
-	e         *echo.Echo
-	r         *repository.Repository
-	h         *handler.Handler
-	userIDMap = make(map[string]uuid.UUID)
+	db *sqlx.DB
+	e  *echo.Echo
+	r  *repository.Repository
+	h  *handler.Handler
 )
 
 func TestMain(m *testing.M) {
@@ -75,25 +70,5 @@ func TestMain(m *testing.M) {
 
 	if err := pool.Purge(resource); err != nil {
 		log.Fatal("purge docker: ", err)
-	}
-}
-
-func doRequest(t *testing.T, method, path string, bodystr string) *httptest.ResponseRecorder {
-	t.Helper()
-
-	req := httptest.NewRequest(method, path, strings.NewReader(bodystr))
-	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-	rec := httptest.NewRecorder()
-	e.ServeHTTP(rec, req)
-
-	return rec
-}
-
-func assert(t *testing.T, expected any, actual any) {
-	t.Helper()
-
-	if diff := cmp.Diff(expected, actual); diff != "" {
-		t.Errorf("diff: %v", diff)
-		t.Fail()
 	}
 }
