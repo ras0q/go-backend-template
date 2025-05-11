@@ -1,2 +1,5 @@
 /.env
 /tmp/
+
+go.work
+go.work.sum

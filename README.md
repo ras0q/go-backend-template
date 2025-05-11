@@ -35,6 +35,7 @@ go run golang.org/x/tools/cmd/gonew@latest github.com/ras0q/go-backend-template 
 > [!TIP]
 > `xc` を使うことでこれらのコマンドを簡単に実行できます。
 > 詳細は以下のページをご覧ください。
+>
 > - [xc](https://xcfile.dev)
 > - [MarkdownベースのGo製タスクランナー「xc」のススメ](https://zenn.dev/trap/articles/af32614c07214d)
 >

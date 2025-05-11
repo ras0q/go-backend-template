@@ -1,10 +1,9 @@
 package integration
 
 import (
-	"backend/internal/handler"
-	"backend/internal/migration"
-	"backend/internal/pkg/config"
-	"backend/internal/repository"
+	"backend/cmd/server/injector"
+	"backend/pkg/config"
+	"backend/pkg/migration"
 	"log"
 	"testing"
 
@@ -14,10 +13,9 @@ import (
 )
 
 var (
-	db *sqlx.DB
-	e  *echo.Echo
-	r  *repository.Repository
-	h  *handler.Handler
+	db  *sqlx.DB
+	e   *echo.Echo
+	dep *injector.Dependency
 )
 
 func TestMain(m *testing.M) {
@@ -42,14 +40,14 @@ func TestMain(m *testing.M) {
 
 	mysqlConfig.Addr = "localhost:" + resource.GetPort("3306/tcp")
 
+	var db *sqlx.DB
 	if err := pool.Retry(func() error {
-		_db, err := sqlx.Connect("mysql", mysqlConfig.FormatDSN())
+		db, err = sqlx.Connect("mysql", mysqlConfig.FormatDSN())
 		if err != nil {
 			return err
 		}
-		db = _db
 
-		return _db.Ping()
+		return db.Ping()
 	}); err != nil {
 		log.Fatal("connect to database container: ", err)
 	}
@@ -60,10 +58,9 @@ func TestMain(m *testing.M) {
 	}
 
 	// setup dependencies
-	r = repository.New(db)
-	h = handler.New(r)
+	dep = injector.Inject(db)
 	e = echo.New()
-	h.SetupRoutes(e.Group("/api/v1"))
+	dep.Handler.SetupRoutes(e.Group("/api/v1"))
 
 	log.Println("start integration test")
 	m.Run()
