@@ -91,6 +91,14 @@ go test -v -cover -race -shuffle=on . ./internal/...
 go test -v -cover -race -shuffle=on ./integration_tests/...
 ```
 
+### test-integration:update
+
+結合テストのスナップショットを更新します。
+
+```sh
+go test -v -cover -race -shuffle=on ./integration_tests/... -update
+```
+
 ### lint
 
 Linter (golangci-lint) を実行します。
