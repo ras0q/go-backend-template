@@ -1,6 +1,6 @@
 // NOTE: go test -updateを実行することで、スナップショットを更新することができる
 
-package integration
+package integration_tests
 
 import (
 	"testing"

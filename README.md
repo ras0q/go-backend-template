@@ -88,7 +88,7 @@ go test -v -cover -race -shuffle=on . ./internal/...
 結合テストを実行します。
 
 ```sh
-go test -v -cover -race -shuffle=on ./integration/...
+go test -v -cover -race -shuffle=on ./integration_tests/...
 ```
 
 ### lint
@@ -125,7 +125,7 @@ golangci-lint run --timeout=5m --fix ./...
     - 複数パッケージから使いまわせるようにする
     - 例: `pkg/config/`: アプリ・DBの設定
     - Tips: 外部にパッケージを公開したい場合は`internal/`の外に出しても良い
-- `integration/`: 結合テスト
+- `integration_tests/`: 結合テスト
   - `internal/`の実装から実際にデータが取得できるかテストする
   - DBの立ち上げには[ory/dockertest](https://github.com/ory/dockertest)を使っている
   - 短期開発段階では時間があれば書く程度で良い

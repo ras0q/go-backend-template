@@ -1,5 +1,5 @@
 *
-!integration/
+!integration_tests/
 !internal/
 !go.mod
 !go.sum

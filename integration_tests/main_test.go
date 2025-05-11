@@ -1,4 +1,4 @@
-package integration
+package integration_tests
 
 import (
 	"backend/cmd/server/injector"
