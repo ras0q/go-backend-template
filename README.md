@@ -44,7 +44,7 @@ VSCodeを使用する場合は`.vscode/settings.json`でLinterの設定を行っ
 > go install github.com/joerdav/xc/cmd/xc@latest
 > ```
 
-### build
+### Build
 
 アプリをビルドします。
 
@@ -54,7 +54,7 @@ go mod download
 go build -o ./bin/${CMD} ./cmd/${CMD}
 ```
 
-### dev
+### Dev
 
 ホットリロードの開発環境を構築します。
 
@@ -69,7 +69,7 @@ Compose Watchにより、ソースコードの変更を検知して自動で再�
 - <http://localhost:8080/> (API)
 - <http://localhost:8081/> (DBの管理画面)
 
-### test
+### Test
 
 全てのテストを実行します。
 
@@ -77,7 +77,7 @@ Compose Watchにより、ソースコードの変更を検知して自動で再�
 go test -v -cover -race -shuffle=on ./...
 ```
 
-### test-unit
+### Test-Unit
 
 単体テストを実行します。
 
@@ -85,7 +85,7 @@ go test -v -cover -race -shuffle=on ./...
 go test -v -cover -race -shuffle=on ./internal/...
 ```
 
-### test-integration
+### Test-Integration
 
 結合テストを実行します。
 
@@ -93,7 +93,7 @@ go test -v -cover -race -shuffle=on ./internal/...
 go test -v -cover -race -shuffle=on ./integration_tests/...
 ```
 
-### test-integration:update
+### Test-Integration:Update
 
 結合テストのスナップショットを更新します。
 
@@ -101,7 +101,7 @@ go test -v -cover -race -shuffle=on ./integration_tests/...
 go test -v -cover -race -shuffle=on ./integration_tests/... -update
 ```
 
-### lint
+### Lint
 
 Linter (golangci-lint) を実行します。
 
