@@ -1,7 +1,7 @@
 package integration_tests
 
 import (
-	"backend/cmd/server/injector"
+	"backend/cmd/server/server"
 	"backend/pkg/config"
 	"backend/pkg/database"
 	"testing"
@@ -55,9 +55,8 @@ func TestMain(m *testing.M) {
 		e.Logger.Fatalf("connect to database container: %v", err)
 	}
 
-	// setup dependencies
-	dep := injector.Inject(db)
-	dep.SetupRoutes(e.Group("/api/v1"))
+	s := server.Inject(db)
+	s.SetupRoutes(e.Group("/api/v1"))
 
 	e.Logger.Info("start integration test")
 	m.Run()

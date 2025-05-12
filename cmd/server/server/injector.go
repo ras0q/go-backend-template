@@ -1,4 +1,4 @@
-package injector
+package server
 
 import (
 	"backend/internal/handler"
@@ -8,20 +8,20 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type Dependency struct {
+type Server struct {
 	handler *handler.Handler
 }
 
-func Inject(db *sqlx.DB) *Dependency {
+func Inject(db *sqlx.DB) *Server {
 	repo := repository.New(db)
 	h := handler.New(repo)
 
-	return &Dependency{
+	return &Server{
 		handler: h,
 	}
 }
 
-func (d *Dependency) SetupRoutes(g *echo.Group) {
+func (d *Server) SetupRoutes(g *echo.Group) {
 	// TODO: handler.SetupRoutesを呼び出す or 直接書く？
 	d.handler.SetupRoutes(g)
 }
