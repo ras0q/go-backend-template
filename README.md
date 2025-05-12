@@ -5,28 +5,29 @@
 ハッカソンなど短期間でWebアプリを開発する際のバックエンドのGo実装例です。
 学習コストと開発コストを抑えることを目的としています。
 
-## プロジェクト作成方法
+## How to use
 
-GitHubの `Use this template` ボタンからレポジトリを作成するか、以下の`gonew`コマンドで作成できます。
+GitHubの `Use this template` ボタンからレポジトリを作成します。
+
+[`gonew`](https://pkg.go.dev/golang.org/x/tools/cmd/gonew) コマンドからでも作成できます。`gonew` コマンドを使うと、モジュール名を予め変更した状態でプロジェクトを作成することができます。
 
 ```sh
-go run golang.org/x/tools/cmd/gonew@latest github.com/ras0q/go-backend-template {{ project_name }}
+gonew github.com/ras0q/go-backend-template {{ project_name }}
 ```
 
-※ GitHub Templateから作成した場合は別途モジュール名を変更することを推奨します。
+## Requirements
 
-## 開発手順
+最低限[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)が必要です。
+[Compose Watch](https://docs.docker.com/compose/file-watch/)を使うため、Docker Composeのバージョンは2.22以上にしてください。
 
-- 最低限[Docker](https://www.docker.com/)と[Docker Compose](https://docs.docker.com/compose/)が必要です。
-  - [Compose Watch](https://docs.docker.com/compose/file-watch/)を使うため、Docker Composeのバージョンは2.22以上にしてください。
-- linter, formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
-  - VSCodeを使用する場合は`.vscode/settings.json`でlinterの設定を行ってください
+Linter, Formatterには[golangci-lint](https://golangci-lint.run/)を使っています。
+VSCodeを使用する場合は`.vscode/settings.json`でLinterの設定を行ってください
 
-  ```json
-  {
-    "go.lintTool": "golangci-lint"
-  }
-  ```
+```json
+{
+  "go.lintTool": "golangci-lint"
+}
+```
 
 ## Tasks
 
@@ -108,42 +109,112 @@ Linter (golangci-lint) を実行します。
 golangci-lint run --timeout=5m --fix ./...
 ```
 
-## 構成
+## Directory structure
 
-- `main.go`: エントリーポイント
-  - 依存ライブラリの初期化など最低限の処理のみを書く
-  - ルーティングの設定は`./internal/handler/handler.go`に書く
-  - 肥大化しそうなら`./internal/infrastructure/{pkgname}`を作って外部ライブラリの初期化処理を書くのもアリ
-- `internal/`: アプリ本体の主実装
-  - Tips: Goの仕様で`internal`パッケージは他プロジェクトから参照できない (<https://go.dev/doc/go1.4#internalpackages>)
-  - `handler/`: ルーティング
-    - 飛んできたリクエストを裁いてレスポンスを生成する
-    - DBアクセスは`repository/`で実装したメソッドを呼び出す
-    - Tips: リクエストのバリデーションがしたい場合は↓のどちらかを使うと良い
-      - [go-playground/validator](https://github.com/go-playground/validator)でタグベースのバリデーションをする
-      - [go-ozzo/ozzo-validation](https://github.com/go-ozzo/ozzo-validation)でコードベースのバリデーションをする
-  - `repository/`: DBアクセス
-    - DBへのアクセス処理
-      - 引数のバリデーションは`handler/`に任せる
-- `pkg/`: 汎用パッケージ
-  - 複数パッケージから使いまわせるようにする
-  - `config/`: アプリ・DBの設定
-  - `database/`: DBの初期化、マイグレーション
-    - DBのスキーマを定義する
-    - Tips: マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っている
-    - 初期化スキーマは`1_schema.sql`に記述し、運用開始後のスキーマ定義変更等は`2_add_user_age.sql`のように連番を振って記述する
-      - Tips: Goでは1.16から[embed](https://pkg.go.dev/embed)パッケージを使ってバイナリにファイルを文字列として埋め込むことができる
-- `integration_tests/`: 結合テスト
-  - `internal/`の実装から実際にデータが取得できるかテストする
-  - DBの立ち上げには[ory/dockertest](https://github.com/ory/dockertest)を使っている
-  - 短期開発段階では時間があれば書く程度で良い
-  - Tips: 外部サービス(traQ, Twitterなど)へのアクセスが発生する場合は[golang/mock](https://github.com/golang/mock)などを使ってモック(テスト用処理)を作ると良い
+[Organizing a Go module - The Go Programming Language](https://go.dev/doc/modules/layout#server-project) などを参考にしています。
 
-## 長期開発に向けた改善点
+```bash
+$ tree -d
+.
+├── bin # ビルドしたバイナリ
+├── cmd # エントリーポイント
+│   └── server # サーバーのエントリーポイント (main.goを置く)
+│       └── server # サーバー固有の設定
+├── integration_tests # 結合テスト
+├── internal # アプリケーション本体のロジック
+│   ├── handler # ルーティング
+│   └── repository # DBアクセス
+└── pkg # 汎用パッケージ
+    ├── config # アプリ・DBの設定
+    └── database # DBの初期化、マイグレーション
+        └── migrations # DBマイグレーションのスキーマ
+
+12 directories
+```
+
+特に重要なものは以下の通りです。
+
+### `cmd/`
+
+アプリケーションのエントリーポイントを配置します。
+エントリーポイントは複数のアプリケーションを持つことも可能です。
+
+テンプレートではサーバーのエントリーポイントが`cmd/server/main.go`に配置されています。
+`cmd/server/server/` にはDIやヘルスチェックなど、サーバー固有の設定を書いています。
+
+### `internal/`
+
+アプリケーション本体のロジックを配置します。
+主に2つのパッケージに分かれています。
+
+- `handler/`: ルーティング
+  - 飛んできたリクエストを裁いてレスポンスを生成する
+  - DBアクセスは`repository/`で実装したメソッドを呼び出す
+  - **Tips**: リクエストのバリデーションがしたい場合は↓のどちらかを使うと良い
+    - [go-playground/validator](https://github.com/go-playground/validator): タグベースのバリデーション
+    - [go-ozzo/ozzo-validation](https://github.com/go-ozzo/ozzo-validation): コードベースのバリデーション
+- `repository/`: ストレージ操作
+  - DBや外部ストレージなどのストレージにアクセスする
+    - 引数のバリデーションは`handler/`に任せる
+
+**Tips**: `internal`パッケージは他モジュールから参照されません（参考: [Go 1.4 Release Notes](https://go.dev/doc/go1.4#internalpackages)）。
+依存性注入や外部ライブラリの初期化のみを`cmd/`や`pkg`で公開し、アプリケーションのロジックは`internal/`に閉じることで、後述の`integration_tests/go.mod`などの外部モジュールからの参照を最小限にすることができ、開発の効率を上げることができます。
+
+### `pkg/`
+
+汎用的なパッケージを配置します。
+
+- `config/`: アプリ・DBの設定
+  - 環境変数を読み込むためのパッケージ
+- `database/`: DBの初期化、マイグレーション
+  - DBのスキーマを定義する
+  - **Tips**: マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っている
+
+### `integration_tests/`
+
+結合テストを配置します。
+APIエンドポイントに対してリクエストを送り、レスポンスを検証します。
+短期開発段階では時間があれば書く程度で良いですが、長期開発に向けては書いておくと良いでしょう。
+
+```go
+package integration_tests
+
+import (
+  "testing"
+  "gotest.tools/v3/assert"
+)
+
+func TestUser(t *testing.T) {
+  t.Run("get users", func(t *testing.T) {
+    t.Run("success", func(t *testing.T) {
+      t.Parallel()
+      rec := doRequest(t, "GET", "/api/v1/users", "")
+
+      expectedStatus := `200 OK`
+      expectedBody := `[{"id":"[UUID]","name":"test","email":"test@example.com"}]`
+      assert.Equal(t, rec.Result().Status, expectedStatus)
+      assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
+    })
+  })
+}
+```
+
+**Tips**: DBコンテナの立ち上げには[ory/dockertest](https://github.com/ory/dockertest)を使っています。
+
+**Tips**: アサーションには[gotest.tools](https://github.com/gotestyourself/gotest.tools)を使っています。
+`go test -update`を実行することで、`expectedXXX`のスナップショットを更新することができます（参考: [gotest.toolsを使う - 詩と創作・思索のひろば](https://motemen.hatenablog.com/entry/2022/03/gotest-tools)）。
+
+外部サービス（traQ, Twitterなど）へのアクセスが発生する場合はTest Doublesでアクセスを置き換えると良いでしょう。
+
+## Improvements
+
+長期開発に向けた改善点をいくつか挙げておきます。
 
 - ドメインを書く (`internal/domain/`など)
   - 現在は簡単のためにAPIスキーマとDBスキーマのみを書きこれらを直接やり取りしている
   - 本来はアプリの仕様や概念をドメインとして書き、スキーマの変換にはドメインを経由させるべき
+- クライアントAPIスキーマを共通化させる
+  - OpenAPIやGraphQLを使い、そこからGoのファイルを生成する
 - 単体テスト・結合テストのカバレッジを上げる
   - カバレッジの可視化には[Codecov](https://codecov.io)(traPだと主流)や[Coveralls](https://coveralls.io)が便利
 - ログの出力を整備する
