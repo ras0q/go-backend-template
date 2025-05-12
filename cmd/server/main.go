@@ -26,7 +26,7 @@ func main() {
 	dep := injector.Inject(db)
 
 	v1API := e.Group("/api/v1")
-	dep.Handler.SetupRoutes(v1API)
+	dep.SetupRoutes(v1API)
 
 	e.Logger.Fatal(e.Start(config.AppAddr()))
 }

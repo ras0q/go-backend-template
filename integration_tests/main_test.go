@@ -4,28 +4,27 @@ import (
 	"backend/cmd/server/injector"
 	"backend/pkg/config"
 	"backend/pkg/database"
-	"log"
 	"testing"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 	"github.com/ory/dockertest/v3"
 )
 
-var (
-	db  *sqlx.DB
-	e   *echo.Echo
-	dep *injector.Dependency
-)
+var e *echo.Echo
 
 func TestMain(m *testing.M) {
+	e = echo.New()
+	e.Logger.SetLevel(log.INFO)
+
 	pool, err := dockertest.NewPool("")
 	if err != nil {
-		log.Fatal("connect to docker: ", err)
+		e.Logger.Fatalf("connect to docker: %v", err)
 	}
 
 	if err := pool.Client.Ping(); err != nil {
-		log.Fatal("ping docker: ", err)
+		e.Logger.Fatalf("ping docker: %v", err)
 	}
 
 	mysqlConfig := config.MySQL()
@@ -35,12 +34,12 @@ func TestMain(m *testing.M) {
 		"MYSQL_DATABASE=" + mysqlConfig.DBName,
 	})
 	if err != nil {
-		log.Fatal("run docker: ", err)
+		e.Logger.Fatalf("run docker: %v", err)
 	}
 
 	mysqlConfig.Addr = "localhost:" + resource.GetPort("3306/tcp")
 
-	log.Println("wait for database container")
+	e.Logger.Info("wait for database container")
 
 	var db *sqlx.DB
 	if err := pool.Retry(func() error {
@@ -53,18 +52,17 @@ func TestMain(m *testing.M) {
 
 		return nil
 	}); err != nil {
-		log.Fatal("connect to database container: ", err)
+		e.Logger.Fatalf("connect to database container: %v", err)
 	}
 
 	// setup dependencies
-	dep = injector.Inject(db)
-	e = echo.New()
-	dep.Handler.SetupRoutes(e.Group("/api/v1"))
+	dep := injector.Inject(db)
+	dep.SetupRoutes(e.Group("/api/v1"))
 
-	log.Println("start integration test")
+	e.Logger.Info("start integration test")
 	m.Run()
 
 	if err := pool.Purge(resource); err != nil {
-		log.Fatal("purge docker: ", err)
+		e.Logger.Fatalf("purge docker: %v", err)
 	}
 }

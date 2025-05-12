@@ -5,10 +5,11 @@ import (
 	"backend/internal/repository"
 
 	"github.com/jmoiron/sqlx"
+	"github.com/labstack/echo/v4"
 )
 
 type Dependency struct {
-	Handler *handler.Handler
+	handler *handler.Handler
 }
 
 func Inject(db *sqlx.DB) *Dependency {
@@ -16,6 +17,11 @@ func Inject(db *sqlx.DB) *Dependency {
 	h := handler.New(repo)
 
 	return &Dependency{
-		Handler: h,
+		handler: h,
 	}
+}
+
+func (d *Dependency) SetupRoutes(g *echo.Group) {
+	// TODO: handler.SetupRoutesを呼び出す or 直接書く？
+	d.handler.SetupRoutes(g)
 }
