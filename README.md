@@ -90,6 +90,7 @@ go test -v -cover -race -shuffle=on ./internal/...
 結合テストを実行します。
 
 ```sh
+[ ! -e ./go.work ] && go work init . ./integration_tests
 go test -v -cover -race -shuffle=on ./integration_tests/...
 ```
 
@@ -98,6 +99,7 @@ go test -v -cover -race -shuffle=on ./integration_tests/...
 結合テストのスナップショットを更新します。
 
 ```sh
+[ ! -e ./go.work ] && go work init . ./integration_tests
 go test -v -cover -race -shuffle=on ./integration_tests/... -update
 ```
 
