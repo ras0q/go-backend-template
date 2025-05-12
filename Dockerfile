@@ -21,7 +21,7 @@ RUN \
   --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=bind,target=. \
-  go build -o /usr/bin/server
+  go build -o /usr/bin/server ./cmd/server/main.go
 
 # use `debug-nonroot` for debug shell access
 FROM gcr.io/distroless/static-debian11:nonroot

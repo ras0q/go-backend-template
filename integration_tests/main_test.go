@@ -40,6 +40,8 @@ func TestMain(m *testing.M) {
 
 	mysqlConfig.Addr = "localhost:" + resource.GetPort("3306/tcp")
 
+	log.Println("wait for database container")
+
 	var db *sqlx.DB
 	if err := pool.Retry(func() error {
 		_db, err := database.Setup(mysqlConfig)

@@ -37,7 +37,7 @@ func migrateTables(db *sql.DB) error {
 		return fmt.Errorf("set dialect: %w", err)
 	}
 
-	if err := goose.Up(db, "./migrations"); err != nil {
+	if err := goose.Up(db, "migrations"); err != nil {
 		return fmt.Errorf("up migration: %w", err)
 	}
 
