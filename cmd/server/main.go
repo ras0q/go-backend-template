@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/cmd/server/server"
+	"backend/apps/server"
 	"backend/pkg/config"
 	"backend/pkg/database"
 
@@ -23,10 +23,10 @@ func main() {
 	}
 	defer db.Close()
 
-	s := server.Inject(db)
+	s := server.InjectDeps(db)
 
 	v1API := e.Group("/api/v1")
-	s.SetupRoutes(v1API)
+	server.SetupRoutes(s.Handler, v1API)
 
 	e.Logger.Fatal(e.Start(config.AppAddr()))
 }
