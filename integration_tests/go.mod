@@ -1,4 +1,4 @@
-module integration_tests
+module integrationtests
 
 go 1.24.2
 
