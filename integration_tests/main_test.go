@@ -2,7 +2,6 @@ package integration_tests
 
 import (
 	"backend/apps/server"
-	"backend/pkg/config"
 	"backend/pkg/database"
 	"testing"
 
@@ -15,6 +14,9 @@ import (
 var e *echo.Echo
 
 func TestMain(m *testing.M) {
+	var config server.Config
+	config.Parse()
+
 	e = echo.New()
 	e.Logger.SetLevel(log.INFO)
 
@@ -27,7 +29,7 @@ func TestMain(m *testing.M) {
 		e.Logger.Fatalf("ping docker: %v", err)
 	}
 
-	mysqlConfig := config.MySQL()
+	mysqlConfig := config.MySQLConfig()
 
 	resource, err := pool.Run("mysql", "latest", []string{
 		"MYSQL_ROOT_PASSWORD=" + mysqlConfig.Passwd,
