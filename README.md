@@ -29,6 +29,93 @@ VSCodeを使用する場合は`.vscode/settings.json`でLinterの設定を行っ
 }
 ```
 
+## Directory structure
+
+[Organizing a Go module - The Go Programming Language](https://go.dev/doc/modules/layout#server-project) などを参考にしています。
+
+```bash
+$ tree | manual-explain
+.
+├── main.go # エントリーポイント
+├── core # アプリケーション本体
+│   ├── database # DBの初期化、マイグレーション
+│   │   └── migrations # DBマイグレーションのスキーマ
+│   ├── internal # ロジック (結合テストに公開する必要がないもの)
+│   │   ├── handler # APIハンドラ
+│   │   └── repository # DBアクセス
+│   └── config.go, deps.go, router.go # セットアップ (統合テスト用に公開)
+├── frontend # フロントエンド
+└── integration_tests # 結合テスト
+```
+
+特に重要なものは以下の通りです。
+
+### `main.go`
+
+アプリケーションのエントリーポイントを配置します。
+
+**Tips**: 複数のエントリーポイントを実装する場合は、`cmd` ディレクトリを作成し、各エントリーポイントを `cmd/{app name}/main.go` に書くと見通しが良くなります。
+
+### `core/internal/`
+
+アプリケーション本体のロジックを配置します。
+主に2つのパッケージに分かれています。
+
+- `handler/`: ルーティング
+  - 飛んできたリクエストを裁いてレスポンスを生成する
+  - DBアクセスは`repository/`で実装したメソッドを呼び出す
+  - **Tips**: リクエストのバリデーションがしたい場合は↓のどちらかを使うと良い
+    - [go-playground/validator](https://github.com/go-playground/validator): タグベースのバリデーション
+    - [go-ozzo/ozzo-validation](https://github.com/go-ozzo/ozzo-validation): コードベースのバリデーション
+- `repository/`: ストレージ操作
+  - DBや外部ストレージなどのストレージにアクセスする
+    - 引数のバリデーションは`handler/`に任せる
+
+**Tips**: `internal`パッケージは他モジュールから参照されません（参考: [Go 1.4 Release Notes](https://go.dev/doc/go1.4#internalpackages)）。
+依存性注入や外部ライブラリの初期化のみを`core/`や`pkg/`で公開し、アプリケーションのロジックは`internal/`に閉じることで、後述の`integration_tests/go.mod`などの外部モジュールからの参照を最小限にすることができ、開発の効率を上げることができます。
+
+### `core/database`
+
+DBスキーマの定義、DBの初期化、マイグレーションを行っています。
+
+マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っています。
+
+### `integration_tests/`
+
+結合テストを配置します。
+APIエンドポイントに対してリクエストを送り、レスポンスを検証します。
+短期開発段階では時間があれば書く程度で良いですが、長期開発に向けては書いておくと良いでしょう。
+
+```go
+package integration_tests
+
+import (
+  "testing"
+  "gotest.tools/v3/assert"
+)
+
+func TestUser(t *testing.T) {
+  t.Run("get users", func(t *testing.T) {
+    t.Run("success", func(t *testing.T) {
+      t.Parallel()
+      rec := doRequest(t, "GET", "/api/v1/users", "")
+
+      expectedStatus := `200 OK`
+      expectedBody := `[{"id":"[UUID]","name":"test","email":"test@example.com"}]`
+      assert.Equal(t, rec.Result().Status, expectedStatus)
+      assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
+    })
+  })
+}
+```
+
+**Tips**: DBコンテナの立ち上げには[ory/dockertest](https://github.com/ory/dockertest)を使っています。
+
+**Tips**: アサーションには[gotest.tools](https://github.com/gotestyourself/gotest.tools)を使っています。
+`go test -update`を実行することで、`expectedXXX`のスナップショットを更新することができます（参考: [gotest.toolsを使う - 詩と創作・思索のひろば](https://motemen.hatenablog.com/entry/2022/03/gotest-tools)）。
+
+外部サービス（traQ, Twitterなど）へのアクセスが発生する場合はTest Doublesでアクセスを置き換えると良いでしょう。
+
 ## Tasks
 
 開発に用いるコマンド一覧
@@ -125,93 +212,6 @@ Linter (golangci-lint) を実行します。
 golangci-lint run --timeout=5m --fix ./...
 ```
 
-## Directory structure
-
-[Organizing a Go module - The Go Programming Language](https://go.dev/doc/modules/layout#server-project) などを参考にしています。
-
-```bash
-$ tree | manual-explain
-.
-├── main.go # エントリーポイント
-├── core # アプリケーション本体
-│   ├── database # DBの初期化、マイグレーション
-│   │   └── migrations # DBマイグレーションのスキーマ
-│   ├── internal # ロジック (結合テストに公開する必要がないもの)
-│   │   ├── handler # APIハンドラ
-│   │   └── repository # DBアクセス
-│   └── config.go, deps.go, router.go # セットアップ (統合テスト用に公開)
-├── frontend # フロントエンド
-└── integration_tests # 結合テスト
-```
-
-特に重要なものは以下の通りです。
-
-### `main.go`
-
-アプリケーションのエントリーポイントを配置します。
-
-**Tips**: 複数のエントリーポイントを実装する場合は、`cmd` ディレクトリを作成し、各エントリーポイントを `cmd/{app name}/main.go` に書くと見通しが良くなります。
-
-### `core/internal/`
-
-アプリケーション本体のロジックを配置します。
-主に2つのパッケージに分かれています。
-
-- `handler/`: ルーティング
-  - 飛んできたリクエストを裁いてレスポンスを生成する
-  - DBアクセスは`repository/`で実装したメソッドを呼び出す
-  - **Tips**: リクエストのバリデーションがしたい場合は↓のどちらかを使うと良い
-    - [go-playground/validator](https://github.com/go-playground/validator): タグベースのバリデーション
-    - [go-ozzo/ozzo-validation](https://github.com/go-ozzo/ozzo-validation): コードベースのバリデーション
-- `repository/`: ストレージ操作
-  - DBや外部ストレージなどのストレージにアクセスする
-    - 引数のバリデーションは`handler/`に任せる
-
-**Tips**: `internal`パッケージは他モジュールから参照されません（参考: [Go 1.4 Release Notes](https://go.dev/doc/go1.4#internalpackages)）。
-依存性注入や外部ライブラリの初期化のみを`core/`や`pkg/`で公開し、アプリケーションのロジックは`internal/`に閉じることで、後述の`integration_tests/go.mod`などの外部モジュールからの参照を最小限にすることができ、開発の効率を上げることができます。
-
-### `core/database`
-
-DBスキーマの定義、DBの初期化、マイグレーションを行っています。
-
-マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っています。
-
-### `integration_tests/`
-
-結合テストを配置します。
-APIエンドポイントに対してリクエストを送り、レスポンスを検証します。
-短期開発段階では時間があれば書く程度で良いですが、長期開発に向けては書いておくと良いでしょう。
-
-```go
-package integration_tests
-
-import (
-  "testing"
-  "gotest.tools/v3/assert"
-)
-
-func TestUser(t *testing.T) {
-  t.Run("get users", func(t *testing.T) {
-    t.Run("success", func(t *testing.T) {
-      t.Parallel()
-      rec := doRequest(t, "GET", "/api/v1/users", "")
-
-      expectedStatus := `200 OK`
-      expectedBody := `[{"id":"[UUID]","name":"test","email":"test@example.com"}]`
-      assert.Equal(t, rec.Result().Status, expectedStatus)
-      assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
-    })
-  })
-}
-```
-
-**Tips**: DBコンテナの立ち上げには[ory/dockertest](https://github.com/ory/dockertest)を使っています。
-
-**Tips**: アサーションには[gotest.tools](https://github.com/gotestyourself/gotest.tools)を使っています。
-`go test -update`を実行することで、`expectedXXX`のスナップショットを更新することができます（参考: [gotest.toolsを使う - 詩と創作・思索のひろば](https://motemen.hatenablog.com/entry/2022/03/gotest-tools)）。
-
-外部サービス（traQ, Twitterなど）へのアクセスが発生する場合はTest Doublesでアクセスを置き換えると良いでしょう。
-
 ## Improvements
 
 長期開発に向けた改善点をいくつか挙げておきます。
@@ -225,3 +225,18 @@ func TestUser(t *testing.T) {
   - カバレッジの可視化には[Codecov](https://codecov.io)(traPだと主流)や[Coveralls](https://coveralls.io)が便利
 - ログの出力を整備する
   - ロギングライブラリは好みに合ったものを使うと良い
+
+## Troubleshooting
+
+### Docker imageのビルドが失敗する
+
+不要なファイルがDocker imageに混入するのを防ぐために `.dockerignore` をallowlist方式にしています。
+ビルドに必要なファイルやディレクトリを追加した場合、 `.dockerignore` も編集してください。
+
+### それでも解決しなければ？
+
+Discussionに[Q&A](https://github.com/ras0q/go-backend-template/discussions/categories/q-a) を用意しています。
+
+ここに @ras0q へのメンションを付けて質問を投げてくれれば答えます。
+
+その他SNSなどの手段での質問ももちろん可能ですが、全体に公開されているDiscussionを推奨しています。
