@@ -14,8 +14,13 @@ import (
 var e *echo.Echo
 
 func TestMain(m *testing.M) {
-	var config server.Config
-	config.Parse()
+	config := server.Config{
+		DBUser: "root",
+		DBPass: "pass",
+		DBHost: "localhost",
+		DBPort: 3306,
+		DBName: "app",
+	}
 
 	e = echo.New()
 	e.Logger.SetLevel(log.INFO)
