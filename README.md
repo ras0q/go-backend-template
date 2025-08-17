@@ -65,7 +65,7 @@ requires: Build-frontend
 
 CMD=server
 go mod download
-go build -o ./bin/${CMD} .
+go build -o ./bin/${CMD} ./main.go
 ```
 
 ### Dev
