@@ -1,8 +1,8 @@
-package server
+package core
 
 import (
-	"backend/internal/handler"
-	"backend/internal/repository"
+	"backend/core/internal/handler"
+	"backend/core/internal/repository"
 
 	"github.com/jmoiron/sqlx"
 )

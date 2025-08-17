@@ -1,11 +1,8 @@
 *
-!applications/
-!cmd/
+!core/
 !frontend/
 frontend/dist/
 frontend/node_modules
 !integration_tests/
-!internal/
-!pkg/
 !go.mod
 !go.sum

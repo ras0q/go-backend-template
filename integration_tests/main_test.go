@@ -1,8 +1,8 @@
 package integrationtests
 
 import (
-	"backend/applications/server"
-	"backend/pkg/database"
+	"backend/core"
+	"backend/core/database"
 	"testing"
 
 	"github.com/jmoiron/sqlx"
@@ -14,7 +14,7 @@ import (
 var e *echo.Echo
 
 func TestMain(m *testing.M) {
-	config := server.Config{
+	config := core.Config{
 		DBUser: "root",
 		DBPass: "pass",
 		DBHost: "localhost",
@@ -62,9 +62,9 @@ func TestMain(m *testing.M) {
 		e.Logger.Fatalf("connect to database container: %v", err)
 	}
 
-	s := server.InjectDeps(db)
+	s := core.InjectDeps(db)
 
-	server.SetupRoutes(s.Handler, e)
+	core.SetupRoutes(s.Handler, e)
 
 	e.Logger.Info("start integration test")
 	m.Run()

@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"backend/internal/repository"
+	"backend/core/internal/repository"
 )
 
 type Handler struct {

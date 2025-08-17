@@ -1,8 +1,8 @@
-package server
+package core
 
 import (
+	"backend/core/internal/handler"
 	"backend/frontend"
-	"backend/internal/handler"
 
 	"github.com/labstack/echo/v4"
 )

@@ -1,15 +1,15 @@
 package main
 
 import (
-	"backend/applications/server"
-	"backend/pkg/database"
+	"backend/core"
+	"backend/core/database"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
 
 func main() {
-	var config server.Config
+	var config core.Config
 	config.Parse()
 
 	e := echo.New()
@@ -25,9 +25,9 @@ func main() {
 	}
 	defer db.Close()
 
-	s := server.InjectDeps(db)
+	s := core.InjectDeps(db)
 
-	server.SetupRoutes(s.Handler, e)
+	core.SetupRoutes(s.Handler, e)
 
 	e.Logger.Fatal(e.Start(config.AppAddr))
 }

@@ -65,7 +65,7 @@ requires: Build-frontend
 
 CMD=server
 go mod download
-go build -o ./bin/${CMD} ./cmd/${CMD}
+go build -o ./bin/${CMD} ./main.go
 ```
 
 ### Dev
@@ -130,35 +130,29 @@ golangci-lint run --timeout=5m --fix ./...
 [Organizing a Go module - The Go Programming Language](https://go.dev/doc/modules/layout#server-project) などを参考にしています。
 
 ```bash
-$ tree -d
+$ tree | manual-explain
 .
-├── bin # ビルドしたバイナリ
-├── cmd # エントリーポイント
-│   └── server # サーバーのエントリーポイント (main.goを置く)
-│       └── server # サーバー固有の設定
-├── integration_tests # 結合テスト
-├── internal # アプリケーション本体のロジック
-│   ├── handler # ルーティング
-│   └── repository # DBアクセス
-└── pkg # 汎用パッケージ
-    ├── config # アプリ・DBの設定
-    └── database # DBの初期化、マイグレーション
-        └── migrations # DBマイグレーションのスキーマ
-
-12 directories
+├── main.go # エントリーポイント
+├── core # アプリケーション本体
+│   ├── database # DBの初期化、マイグレーション
+│   │   └── migrations # DBマイグレーションのスキーマ
+│   ├── internal # ロジック (結合テストに公開する必要がないもの)
+│   │   ├── handler # APIハンドラ
+│   │   └── repository # DBアクセス
+│   └── config.go, deps.go, router.go # セットアップ (統合テスト用に公開)
+├── frontend # フロントエンド
+└── integration_tests # 結合テスト
 ```
 
 特に重要なものは以下の通りです。
 
-### `cmd/`
+### `main.go`
 
 アプリケーションのエントリーポイントを配置します。
-エントリーポイントは複数のアプリケーションを持つことも可能です。
 
-テンプレートではサーバーのエントリーポイントが`cmd/server/main.go`に配置されています。
-`cmd/server/server/` にはDIやヘルスチェックなど、サーバー固有の設定を書いています。
+**Tips**: 複数のエントリーポイントを実装する場合は、`cmd` ディレクトリを作成し、各エントリーポイントを `cmd/{app name}/main.go` に書くと見通しが良くなります。
 
-### `internal/`
+### `core/internal/`
 
 アプリケーション本体のロジックを配置します。
 主に2つのパッケージに分かれています。
@@ -174,17 +168,13 @@ $ tree -d
     - 引数のバリデーションは`handler/`に任せる
 
 **Tips**: `internal`パッケージは他モジュールから参照されません（参考: [Go 1.4 Release Notes](https://go.dev/doc/go1.4#internalpackages)）。
-依存性注入や外部ライブラリの初期化のみを`cmd/`や`pkg`で公開し、アプリケーションのロジックは`internal/`に閉じることで、後述の`integration_tests/go.mod`などの外部モジュールからの参照を最小限にすることができ、開発の効率を上げることができます。
+依存性注入や外部ライブラリの初期化のみを`core/`や`pkg/`で公開し、アプリケーションのロジックは`internal/`に閉じることで、後述の`integration_tests/go.mod`などの外部モジュールからの参照を最小限にすることができ、開発の効率を上げることができます。
 
-### `pkg/`
+### `core/database`
 
-汎用的なパッケージを配置します。
+DBスキーマの定義、DBの初期化、マイグレーションを行っています。
 
-- `config/`: アプリ・DBの設定
-  - 環境変数を読み込むためのパッケージ
-- `database/`: DBの初期化、マイグレーション
-  - DBのスキーマを定義する
-  - **Tips**: マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っている
+マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っています。
 
 ### `integration_tests/`
 

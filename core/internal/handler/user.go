@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"backend/internal/repository"
+	"backend/core/internal/repository"
 	"fmt"
 	"net/http"
 
