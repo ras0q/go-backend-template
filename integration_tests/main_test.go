@@ -1,9 +1,10 @@
 package integrationtests
 
 import (
-	"backend/core"
-	"backend/core/database"
 	"testing"
+
+	"github.com/ras0q/go-backend-template/core"
+	"github.com/ras0q/go-backend-template/core/database"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"

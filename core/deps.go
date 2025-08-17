@@ -1,8 +1,8 @@
 package core
 
 import (
-	"backend/core/internal/handler"
-	"backend/core/internal/repository"
+	"github.com/ras0q/go-backend-template/core/internal/handler"
+	"github.com/ras0q/go-backend-template/core/internal/repository"
 
 	"github.com/jmoiron/sqlx"
 )

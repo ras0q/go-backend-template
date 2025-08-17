@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"backend/core/internal/repository"
+	"github.com/ras0q/go-backend-template/core/internal/repository"
 )
 
 type Handler struct {

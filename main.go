@@ -1,8 +1,8 @@
 package main
 
 import (
-	"backend/core"
-	"backend/core/database"
+	"github.com/ras0q/go-backend-template/core"
+	"github.com/ras0q/go-backend-template/core/database"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"

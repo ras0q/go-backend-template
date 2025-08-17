@@ -1,4 +1,4 @@
-module backend
+module github.com/ras0q/go-backend-template
 
 go 1.24.2
 
