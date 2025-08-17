@@ -87,8 +87,6 @@ Compose Watchにより、ソースコードの変更を検知して自動で再�
 
 全てのテストを実行します。
 
-requires: Build-frontend
-
 ```sh
 go test -v -cover -race -shuffle=on ./...
 ```
@@ -97,8 +95,6 @@ go test -v -cover -race -shuffle=on ./...
 
 単体テストを実行します。
 
-requires: Build-frontend
-
 ```sh
 go test -v -cover -race -shuffle=on ./internal/...
 ```
@@ -106,8 +102,6 @@ go test -v -cover -race -shuffle=on ./internal/...
 ### Test-Integration
 
 結合テストを実行します。
-
-requires: Build-frontend
 
 ```sh
 [ ! -e ./go.work ] && go work init . ./integration_tests
@@ -118,8 +112,6 @@ go test -v -cover -race -shuffle=on ./integration_tests/...
 
 結合テストのスナップショットを更新します。
 
-requires: Build-frontend
-
 ```sh
 [ ! -e ./go.work ] && go work init . ./integration_tests
 go test -v -cover -race -shuffle=on ./integration_tests/... -update
@@ -128,8 +120,6 @@ go test -v -cover -race -shuffle=on ./integration_tests/... -update
 ### Lint
 
 Linter (golangci-lint) を実行します。
-
-requires: Build-frontend
 
 ```sh
 golangci-lint run --timeout=5m --fix ./...

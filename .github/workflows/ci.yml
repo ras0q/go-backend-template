@@ -86,6 +86,7 @@ jobs:
       pull-requests: write
     needs:
       - build
+      - lint
       - test-unit
       - test-integration
     if: ${{ github.actor == 'dependabot[bot]' }}
