@@ -65,7 +65,7 @@ requires: Build-frontend
 
 CMD=server
 go mod download
-go build -o ./bin/${CMD} ./main.go
+go build -o ./bin/${CMD} .
 ```
 
 ### Dev
@@ -96,7 +96,7 @@ go test -v -cover -race -shuffle=on ./...
 単体テストを実行します。
 
 ```sh
-go test -v -cover -race -shuffle=on ./internal/...
+go test -v -cover -race -shuffle=on ./core/...
 ```
 
 ### Test-Integration

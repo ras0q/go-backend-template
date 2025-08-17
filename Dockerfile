@@ -36,7 +36,7 @@ RUN \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=bind,target=.,readwrite \
   cp -r /tmp/dist /app/frontend/dist \
-  && go build -o /usr/bin/server ./main.go
+  && go build -o /usr/bin/server .
 
 # use `debug-nonroot` for debug shell access
 FROM gcr.io/distroless/static-debian11:nonroot
