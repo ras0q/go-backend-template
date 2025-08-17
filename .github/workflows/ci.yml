@@ -15,6 +15,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ./frontend/.node-version
       - name: Build with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest build
 
@@ -28,6 +31,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ./frontend/.node-version
       - uses: golangci/golangci-lint-action@v7
         with:
           version: latest
@@ -43,6 +49,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ./frontend/.node-version
       - name: Unit test with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest test-unit
 
@@ -56,6 +65,9 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ./frontend/.node-version
       - name: Integration test with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest test-integration
 
