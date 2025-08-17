@@ -43,27 +43,3 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name != 'pull_request'
-    permissions:
-      contents: write
-    steps:
-      - name: Check if deploy branch exists
-        run: git ls-remote --exit-code origin refs/heads/deploy
-        continue-on-error: true
-      - uses: actions/checkout@v4
-        if: success()
-        with:
-          ref: deploy
-      - name: Push empty commit
-        if: success()
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git commit --allow-empty -m "Trigger deploy: ${{ github.ref }}"
-          git push origin HEAD:deploy
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
