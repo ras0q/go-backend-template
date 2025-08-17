@@ -1,7 +1,7 @@
 package integrationtests
 
 import (
-	"backend/apps/server"
+	"backend/applications/server"
 	"backend/pkg/database"
 	"testing"
 

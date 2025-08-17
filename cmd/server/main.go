@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/apps/server"
+	"backend/applications/server"
 	"backend/pkg/database"
 
 	"github.com/labstack/echo/v4"

@@ -1,4 +1,5 @@
 *
+!applications/
 !cmd/
 !integration_tests/
 !internal/
