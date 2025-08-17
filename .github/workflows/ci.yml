@@ -35,6 +35,7 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: frontend-dist
+          path: ./frontend/dist
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
@@ -56,6 +57,7 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: frontend-dist
+          path: ./frontend/dist
       - name: Unit test with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest test-unit
 
@@ -72,6 +74,7 @@ jobs:
       - uses: actions/download-artifact@v5
         with:
           name: frontend-dist
+          path: ./frontend/dist
       - name: Integration test with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest test-integration
 
