@@ -64,8 +64,7 @@ func TestMain(m *testing.M) {
 
 	s := server.InjectDeps(db)
 
-	v1API := e.Group("/api/v1")
-	server.SetupRoutes(s.Handler, v1API)
+	server.SetupRoutes(s.Handler, e)
 
 	e.Logger.Info("start integration test")
 	m.Run()

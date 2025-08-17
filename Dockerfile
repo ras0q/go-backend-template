@@ -1,5 +1,18 @@
 # syntax=docker/dockerfile:1
 
+FROM node:22 AS frontend-builder
+
+WORKDIR /app
+
+RUN \
+  --mount=type=bind,source=frontend/package.json,target=package.json \
+  --mount=type=bind,source=frontend/package-lock.json,target=package-lock.json \
+  npm ci
+
+COPY ./frontend ./
+RUN npm run build
+RUN ls -al
+
 FROM golang:1.24 AS builder
 
 WORKDIR /app
@@ -17,11 +30,13 @@ RUN \
   --mount=type=bind,source=go.sum,target=go.sum \
   go mod download
 
+COPY --from=frontend-builder /app/dist /tmp/dist
 RUN \
   --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
-  --mount=type=bind,target=. \
-  go build -o /usr/bin/server ./cmd/server/main.go
+  --mount=type=bind,target=.,readwrite \
+  cp -r /tmp/dist /app/frontend/dist \
+  && go build -o /usr/bin/server ./cmd/server/main.go
 
 # use `debug-nonroot` for debug shell access
 FROM gcr.io/distroless/static-debian11:nonroot

@@ -1,6 +1,9 @@
 *
 !applications/
 !cmd/
+!frontend/
+frontend/dist/
+frontend/node_modules
 !integration_tests/
 !internal/
 !pkg/

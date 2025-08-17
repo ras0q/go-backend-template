@@ -1,20 +1,25 @@
 package server
 
 import (
+	"backend/frontend"
 	"backend/internal/handler"
 
 	"github.com/labstack/echo/v4"
 )
 
-func SetupRoutes(h *handler.Handler, g *echo.Group) {
+func SetupRoutes(h *handler.Handler, e *echo.Echo) {
+	e.StaticFS("/", frontend.Static)
+
+	v1API := e.Group("/api/v1")
+
 	// ping API
-	pingAPI := g.Group("/ping")
+	pingAPI := v1API.Group("/ping")
 	{
 		pingAPI.GET("", h.Ping)
 	}
 
 	// user API
-	userAPI := g.Group("/users")
+	userAPI := v1API.Group("/users")
 	{
 		userAPI.GET("", h.GetUsers)
 		userAPI.POST("", h.CreateUser)
