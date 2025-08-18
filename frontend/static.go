@@ -11,4 +11,4 @@ import (
 //go:embed app-ui/dist
 var uiDist embed.FS
 
-var UI, _ = fs.Sub(uiDist, "dist")
+var UI, _ = fs.Sub(uiDist, "app-ui/dist")
