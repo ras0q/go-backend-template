@@ -43,3 +43,39 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+  # deploy branch にビルド済みの Docker image を参照する Dockerfile を作成するJob
+  # deploy という名前の orphan branch が事前に作られている必要がある
+  #
+  # ```sh
+  # git switch --orphan deploy
+  # git rm -rf .
+  # git push HEAD:deploy
+  # ```
+  #
+  # deploy:
+  #   name: Deploy
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   if: github.event_name != 'pull_request'
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: deploy
+  #     - name: Create Dockerfile for deploy
+  #       run: printf "%s\n" "$DOCKERFILE" > Dockerfile
+  #       env:
+  #         DOCKERFILE: |
+  #           FROM ghcr.io/${{ github.repository }}:${{ github.sha }}
+  #           # 必要に応じて設定を追加する
+  #     - name: Push empty commit
+  #       run: |
+  #         git config user.name "GitHub Actions"
+  #         git config user.email "actions@github.com"
+  #         git add Dockerfile
+  #         git commit -m "Trigger deploy: ${{ github.ref }}"
+  #         git push origin HEAD:deploy
+  #       env:
+  #         GITHUB_TOKEN: ${{ github.token }}
+  #

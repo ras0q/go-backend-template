@@ -228,74 +228,9 @@ golangci-lint run --timeout=5m --fix ./...
 
 ## Deploy
 
-### 1. `deploy` branchの作成
+GitHub Actions でビルドした Docker image を Heroku や NeoShowcase のような PaaS にデプロイするためのJobを用意しています。
 
-```sh
-git switch --orphan deploy
-git rm -rf .
-```
-
-### 2. デプロイ用ファイルの作成 (`deploy` branch)
-
-```dockerfile
-# Dockerfile
-FROM ghcr.io/{{ ユーザー名 }}/{{ レポジトリ名 }}:latest
-# 必要であれば環境変数や追加設定を記述
-```
-
-```sh
-git add Dockerfile
-git commit -m "build: add Dockerfile for deploy"
-git push origin deploy
-```
-
-### 3. ジョブの追加 (`main` branch)
-
-```sh
-git switch main
-```
-
-```yaml
-# .github/workflows/image.yaml
-jobs:
-  build:
-    # ...
-
-  # 以下を追加
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.event_name != 'pull_request'
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: deploy
-      - name: Push empty commit
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git commit --allow-empty -m "Trigger deploy: ${{ github.ref }}"
-          git push origin HEAD:deploy
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-```
-
-```sh
-git add .github/workflows/image.yaml
-git commit -m "build: add deploy job"
-git push origin main
-```
-
-### 4. 好みの環境にデプロイ
-
-`deploy` branchを対象にすることで、以下のフローが行われます。
-
-- GitHub ActionsでDocker imageをbuild&push
-- → `deploy` branchにCommitが追加
-- Branchの更新をトリガーにデプロイが実行される
+詳しくは [./.github/workflows/image.yaml](./.github/workflows/image.yaml) を参照してください。
 
 ## Troubleshooting
 
