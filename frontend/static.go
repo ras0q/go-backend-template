@@ -5,7 +5,10 @@ import (
 	"io/fs"
 )
 
-//go:embed dist
-var dist embed.FS
+// NOTE: go:embed でフロントエンドをGoのバイナリに埋め込んで配信している
+// 同様にembed.FSを増やすことで複数のフロントエンドプロジェクトを同時に埋め込むことが可能
 
-var Static, _ = fs.Sub(dist, "dist")
+//go:embed app-ui/dist
+var uiDist embed.FS
+
+var UI, _ = fs.Sub(uiDist, "dist")

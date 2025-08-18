@@ -5,11 +5,11 @@ FROM node:22 AS frontend-builder
 WORKDIR /app
 
 RUN \
-  --mount=type=bind,source=frontend/package.json,target=package.json \
-  --mount=type=bind,source=frontend/package-lock.json,target=package-lock.json \
+  --mount=type=bind,source=frontend/app-ui/package.json,target=package.json \
+  --mount=type=bind,source=frontend/app-ui/package-lock.json,target=package-lock.json \
   npm ci
 
-COPY ./frontend ./
+COPY ./frontend/app-ui ./
 RUN npm run build
 RUN ls -al
 
@@ -35,7 +35,7 @@ RUN \
   --mount=type=cache,target=${GOCACHE} \
   --mount=type=cache,target=${GOMODCACHE} \
   --mount=type=bind,target=.,readwrite \
-  cp -r /tmp/dist /app/frontend/dist \
+  cp -r /tmp/dist /app/frontend/app-ui/dist \
   && go build -o /usr/bin/server ./main.go
 
 # use `debug-nonroot` for debug shell access

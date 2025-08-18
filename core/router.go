@@ -8,7 +8,7 @@ import (
 )
 
 func SetupRoutes(h *handler.Handler, e *echo.Echo) {
-	e.StaticFS("/", frontend.Static)
+	e.StaticFS("/", frontend.UI)
 
 	v1API := e.Group("/api/v1")
 

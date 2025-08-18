@@ -131,11 +131,11 @@ func TestUser(t *testing.T) {
 > go install github.com/joerdav/xc/cmd/xc@latest
 > ```
 
-### Build-frontend
+### Build-UI
 
 フロントエンドをビルドします。
 
-directory: ./frontend
+directory: ./frontend/app-ui
 
 ```sh
 npm install
@@ -146,7 +146,7 @@ npm run build
 
 アプリをビルドします。
 
-requires: Build-frontend
+requires: Build-UI
 
 ```sh
 

@@ -1,19 +1,17 @@
 # frontend
 
-Webフロントエンドのサンプルとして [Vite](https://vite.dev) で作成したテンプレートを置いています。
+Webフロントエンドのサンプルとして `./app-ui/` に [Vite](https://vite.dev) で作成したテンプレートを置いています。
 
-他のframeworkを使用したい場合、このディレクトリを削除しフロントエンドプロジェクトを作成しなおしてください。
+他のframeworkを使用したい場合、フロントエンドのプロジェクトを削除し作成しなおしてください。
 
-`static.go` はGoのバックエンドにフロントエンドの成果物を埋め込むために必要なので消さないでください。
+`static.go` はGoのバックエンドにフロントエンドの成果物を埋め込むために使用しています。
+フロントエンドプロジェクトの名前に応じて適宜変更してください。
 
 ```sh
-# in project root
+cd ./frontend
 
-cp ./frontend/static.go /tmp/static.go
-rm -r ./frontend
+rm -r ./app-ui
 
 # See https://vite.dev/guide/
 npm create vite@latest
-
-cp /tmp/static.go ./frontend/static.go
 ```

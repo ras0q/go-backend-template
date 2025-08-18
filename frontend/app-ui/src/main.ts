@@ -18,9 +18,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <p class="read-the-docs">
       Click on the Vite and TypeScript logos to learn more
     </p>
-    <div>
-      <a href="/api/v1/ping">Ping to API</a>
-    </div>
   </div>
 `
 
