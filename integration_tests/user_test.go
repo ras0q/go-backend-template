@@ -63,7 +63,7 @@ func TestUser(t *testing.T) {
 			rec := doRequest(t, "GET", "/api/v1/users", "")
 
 			expectedStatus := `200 OK`
-			expectedBody := `[{"id":"[UUID]","name":"test","email":"test@example.com"}]`
+			expectedBody := `[{"id":"[UUID]","name":"test","email":"test@example.com","iconUrl":"https://via.placeholder.com/150/92c952"}]`
 			assert.Equal(t, rec.Result().Status, expectedStatus)
 			assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
 		})
@@ -75,7 +75,7 @@ func TestUser(t *testing.T) {
 			rec := doRequest(t, "GET", "/api/v1/users/"+userIDMap["user1"].String(), "")
 
 			expectedStatus := `200 OK`
-			expectedBody := `{"id":"[UUID]","name":"test","email":"test@example.com"}`
+			expectedBody := `{"id":"[UUID]","name":"test","email":"test@example.com","iconUrl":"https://via.placeholder.com/150/92c952"}`
 			assert.Equal(t, rec.Result().Status, expectedStatus)
 			assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
 		})
