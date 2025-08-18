@@ -42,7 +42,8 @@ $ tree | manual-explain
 │   │   └── migrations # DBマイグレーションのスキーマ
 │   ├── internal # ロジック (結合テストに公開する必要がないもの)
 │   │   ├── handler # APIハンドラ
-│   │   └── repository # DBアクセス
+│   │   ├── repository # DBアクセス
+│   │   └── services # 外部サービス, 複雑なビジネスロジック
 │   └── config.go, deps.go, router.go # セットアップ (統合テスト用に公開)
 ├── frontend # フロントエンド
 └── integration_tests # 結合テスト

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/ras0q/go-backend-template/core/internal/repository"
+	"github.com/ras0q/go-backend-template/core/internal/services/photoapi"
 
 	vd "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
@@ -17,9 +18,10 @@ type (
 	GetUsersResponse []GetUserResponse
 
 	GetUserResponse struct {
-		ID    uuid.UUID `json:"id"`
-		Name  string    `json:"name"`
-		Email string    `json:"email"`
+		ID      uuid.UUID `json:"id"`
+		Name    string    `json:"name"`
+		Email   string    `json:"email"`
+		IconURL string    `json:"iconUrl"`
 	}
 
 	CreateUserRequest struct {
@@ -39,12 +41,18 @@ func (h *Handler) GetUsers(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 	}
 
+	photo, err := photoapi.GetPhoto()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+	}
+
 	res := make(GetUsersResponse, len(users))
 	for i, user := range users {
 		res[i] = GetUserResponse{
-			ID:    user.ID,
-			Name:  user.Name,
-			Email: user.Email,
+			ID:      user.ID,
+			Name:    user.Name,
+			Email:   user.Email,
+			IconURL: photo.ThumbnailURL,
 		}
 	}
 
@@ -94,10 +102,16 @@ func (h *Handler) GetUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
 	}
 
+	photo, err := photoapi.GetPhoto()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+	}
+
 	res := GetUserResponse{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
+		ID:      user.ID,
+		Name:    user.Name,
+		Email:   user.Email,
+		IconURL: photo.ThumbnailURL,
 	}
 
 	return c.JSON(http.StatusOK, res)
