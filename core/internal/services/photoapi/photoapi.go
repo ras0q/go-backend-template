@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+
+	"github.com/ras0q/goalie"
 )
 
 const photoAPIEndpoint = "https://jsonplaceholder.typicode.com/photos/1"
@@ -17,12 +19,15 @@ type Photo struct {
 	ThumbnailURL string `json:"thumbnailUrl"`
 }
 
-func GetPhoto() (*Photo, error) {
+func GetPhoto() (_ *Photo, err error) {
+	g := goalie.New()
+	defer g.Collect(&err)
+
 	resp, err := http.Get(photoAPIEndpoint)
 	if err != nil {
 		return nil, fmt.Errorf("failed to send request: %w", err)
 	}
-	defer resp.Body.Close()
+	defer g.Guard(resp.Body.Close)
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
