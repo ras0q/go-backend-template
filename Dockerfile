@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM node:22 AS frontend-builder
+FROM node:24 AS frontend-builder
 
 WORKDIR /app
 
