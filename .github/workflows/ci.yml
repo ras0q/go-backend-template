@@ -32,7 +32,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: frontend-dist
           path: ./frontend/app-ui/dist
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: frontend-dist
           path: ./frontend/app-ui/dist
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v6
         with:
           name: frontend-dist
           path: ./frontend/app-ui/dist
