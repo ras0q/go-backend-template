@@ -20,7 +20,7 @@ jobs:
           node-version-file: ./frontend/.node-version
       - name: Build with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: frontend-dist
           path: ./frontend/app-ui/dist
