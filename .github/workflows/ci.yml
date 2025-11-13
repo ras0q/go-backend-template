@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
       - uses: actions/setup-node@v4
@@ -36,7 +36,7 @@ jobs:
         with:
           name: frontend-dist
           path: ./frontend/app-ui/dist
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
       - uses: golangci/golangci-lint-action@v8
@@ -51,7 +51,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
       - uses: actions/download-artifact@v5
@@ -68,7 +68,7 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
       - uses: actions/download-artifact@v5
