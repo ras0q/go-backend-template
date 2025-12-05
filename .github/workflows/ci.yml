@@ -15,15 +15,8 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ./frontend/.node-version
       - name: Build with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest build
-      - uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: ./frontend/app-ui/dist
 
   lint:
     name: Lint
@@ -32,10 +25,6 @@ jobs:
       - build
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/download-artifact@v5
-        with:
-          name: frontend-dist
-          path: ./frontend/app-ui/dist
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
@@ -54,10 +43,6 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - uses: actions/download-artifact@v5
-        with:
-          name: frontend-dist
-          path: ./frontend/app-ui/dist
       - name: Unit test with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest test-unit
 
@@ -71,10 +56,6 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version-file: ./go.mod
-      - uses: actions/download-artifact@v5
-        with:
-          name: frontend-dist
-          path: ./frontend/app-ui/dist
       - name: Integration test with xc
         run: go run github.com/joerdav/xc/cmd/xc@latest test-integration
 

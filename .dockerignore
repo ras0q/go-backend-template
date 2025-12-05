@@ -1,8 +1,5 @@
 *
 !core/
-!frontend/
-frontend/dist/
-frontend/node_modules
 !integration_tests/
 !go.mod
 !go.sum

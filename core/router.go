@@ -2,14 +2,11 @@ package core
 
 import (
 	"github.com/ras0q/go-backend-template/core/internal/handler"
-	"github.com/ras0q/go-backend-template/frontend"
 
 	"github.com/labstack/echo/v4"
 )
 
 func SetupRoutes(h *handler.Handler, e *echo.Echo) {
-	e.StaticFS("/", frontend.UI)
-
 	v1API := e.Group("/api/v1")
 
 	// ping API

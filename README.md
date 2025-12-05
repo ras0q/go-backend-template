@@ -45,7 +45,6 @@ $ tree | manual-explain
 │   │   ├── repository # DBアクセス
 │   │   └── services # 外部サービス, 複雑なビジネスロジック
 │   └── config.go, deps.go, router.go # セットアップ (統合テスト用に公開)
-├── frontend # フロントエンド
 └── integration_tests # 結合テスト
 ```
 
@@ -131,17 +130,6 @@ func TestUser(t *testing.T) {
 > ```bash
 > go install github.com/joerdav/xc/cmd/xc@latest
 > ```
-
-### Build-UI
-
-フロントエンドをビルドします。
-
-directory: ./frontend/app-ui
-
-```sh
-npm install
-npm run build
-```
 
 ### Build
 
