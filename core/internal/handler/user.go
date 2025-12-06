@@ -7,7 +7,6 @@ import (
 
 	"github.com/ras0q/go-backend-template/api"
 	"github.com/ras0q/go-backend-template/core/internal/repository"
-	"github.com/ras0q/go-backend-template/core/internal/services/photoapi"
 
 	vd "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
@@ -24,7 +23,7 @@ func (h *Handler) CreateUser(ctx context.Context, req *api.CreateUserReq) (*api.
 		return nil, &api.ErrorStatusCode{
 			StatusCode: http.StatusBadRequest,
 			Response: api.Error{
-				Message: fmt.Sprintf("invalid request: %s", err.Error()),
+				Message: fmt.Sprintf("invalid request body: %s", err.Error()),
 			},
 		}
 	}
@@ -51,7 +50,7 @@ func (h *Handler) GetUser(ctx context.Context, params api.GetUserParams) (*api.U
 		return nil, fmt.Errorf("get user from repository: %w", err)
 	}
 
-	photo, err := photoapi.GetPhoto()
+	photo, err := h.photo.GetPhoto(1)
 	if err != nil {
 		return nil, fmt.Errorf("get user icon from photoapi: %w", err)
 	}
@@ -73,7 +72,7 @@ func (h *Handler) GetUsers(ctx context.Context) ([]api.User, error) {
 		return nil, fmt.Errorf("get users from repository: %w", err)
 	}
 
-	photo, err := photoapi.GetPhoto()
+	photo, err := h.photo.GetPhoto(1)
 	if err != nil {
 		return nil, fmt.Errorf("get user icon from photoapi: %w", err)
 	}

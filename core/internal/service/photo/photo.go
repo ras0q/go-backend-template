@@ -1,4 +1,4 @@
-package photoapi
+package photo_service
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/ras0q/goalie"
 )
 
-const photoAPIEndpoint = "https://jsonplaceholder.typicode.com/photos/1"
+const photoAPIEndpoint = "https://jsonplaceholder.typicode.com/photos"
 
 type Photo struct {
 	AlbumID      int    `json:"albumId"`
@@ -19,11 +19,17 @@ type Photo struct {
 	ThumbnailURL string `json:"thumbnailUrl"`
 }
 
-func GetPhoto() (_ *Photo, err error) {
+type PhotoService struct{}
+
+func NewPhotoService() *PhotoService {
+	return &PhotoService{}
+}
+
+func (*PhotoService) GetPhoto(id int) (_ *Photo, err error) {
 	g := goalie.New()
 	defer g.Collect(&err)
 
-	resp, err := http.Get(photoAPIEndpoint)
+	resp, err := http.Get(fmt.Sprintf("%s/%d", photoAPIEndpoint, id))
 	if err != nil {
 		return nil, fmt.Errorf("failed to send request: %w", err)
 	}
