@@ -8,7 +8,7 @@ import (
 )
 
 // GET /api/v1/ping
-func (h *Handler) Ping(ctx context.Context) (api.PingOK, error) {
+func (h *Handler) Ping(_ context.Context) (api.PingOK, error) {
 	r := strings.NewReader("pong")
 
 	res := api.PingOK{

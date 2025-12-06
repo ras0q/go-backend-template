@@ -7,16 +7,16 @@ import (
 
 	"github.com/ras0q/go-backend-template/internal/api"
 	"github.com/ras0q/go-backend-template/internal/repository"
-	photo_service "github.com/ras0q/go-backend-template/internal/service/photo"
+	"github.com/ras0q/go-backend-template/internal/service/photo"
 )
 
 type Handler struct {
-	photo *photo_service.PhotoService
+	photo *photo.Service
 	repo  *repository.Repository
 }
 
 func New(
-	photo *photo_service.PhotoService,
+	photo *photo.Service,
 	repo *repository.Repository,
 ) *Handler {
 	return &Handler{

@@ -1,4 +1,4 @@
-package photo_service
+package photo
 
 import (
 	"encoding/json"
@@ -19,13 +19,13 @@ type Photo struct {
 	ThumbnailURL string `json:"thumbnailUrl"`
 }
 
-type PhotoService struct{}
+type Service struct{}
 
-func NewPhotoService() *PhotoService {
-	return &PhotoService{}
+func NewPhotoService() *Service {
+	return &Service{}
 }
 
-func (*PhotoService) GetPhoto(id int) (_ *Photo, err error) {
+func (*Service) GetPhoto(id int) (_ *Photo, err error) {
 	g := goalie.New()
 	defer g.Collect(&err)
 
