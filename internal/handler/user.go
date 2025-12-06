@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ras0q/go-backend-template/api"
-	"github.com/ras0q/go-backend-template/core/internal/repository"
+	"github.com/ras0q/go-backend-template/internal/api"
+	"github.com/ras0q/go-backend-template/internal/repository"
 )
 
 // POST /api/v1/users

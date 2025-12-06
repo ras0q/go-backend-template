@@ -4,12 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/ras0q/go-backend-template/api"
-	"github.com/ras0q/go-backend-template/core"
-	"github.com/ras0q/go-backend-template/core/database"
-
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
+	"github.com/ras0q/go-backend-template/infrastructure/config"
+	"github.com/ras0q/go-backend-template/infrastructure/database"
+	"github.com/ras0q/go-backend-template/infrastructure/injector"
 	"github.com/ras0q/goalie"
 )
 
@@ -23,30 +20,22 @@ func run() (err error) {
 	g := goalie.New()
 	defer g.Collect(&err)
 
-	var config core.Config
-	config.Parse()
-
-	e := echo.New()
-
-	// middlewares
-	e.Use(middleware.Recover())
-	e.Use(middleware.Logger())
+	var c config.Config
+	c.Parse()
 
 	// connect to and migrate database
-	db, err := database.Setup(config.MySQLConfig())
+	db, err := database.Setup(c.MySQLConfig())
 	if err != nil {
 		return err
 	}
 	defer g.Guard(db.Close)
 
-	deps := core.InjectDeps(db)
-
-	server, err := api.NewServer(deps.Handler)
+	server, err := injector.InjectServer(db)
 	if err != nil {
 		return err
 	}
 
-	if err := http.ListenAndServe(config.AppAddr, server); err != nil {
+	if err := http.ListenAndServe(c.AppAddr, server); err != nil {
 		return err
 	}
 

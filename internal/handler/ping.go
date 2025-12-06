@@ -4,7 +4,7 @@ import (
 	"context"
 	"strings"
 
-	"github.com/ras0q/go-backend-template/api"
+	"github.com/ras0q/go-backend-template/internal/api"
 )
 
 // GET /api/v1/ping

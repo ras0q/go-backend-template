@@ -37,14 +37,11 @@ VSCodeを使用する場合は`.vscode/settings.json`でLinterの設定を行っ
 $ tree | manual-explain
 .
 ├── main.go # エントリーポイント
-├── core # アプリケーション本体
-│   ├── database # DBの初期化、マイグレーション
-│   │   └── migrations # DBマイグレーションのスキーマ
-│   ├── internal # ロジック (結合テストに公開する必要がないもの)
-│   │   ├── handler # APIハンドラ
-│   │   ├── repository # DBアクセス
-│   │   └── services # 外部サービス, 複雑なビジネスロジック
-│   └── config.go, deps.go, router.go # セットアップ (統合テスト用に公開)
+├── infrastructure # 統合テスト用に公開するDBやDI等の設定
+├── internal # ロジック (結合テストに公開する必要がないもの)
+│   ├── handler # APIハンドラ
+│   ├── repository # DBアクセス
+│   └── services # 外部サービス, 複雑なビジネスロジック
 └── integration_tests # 結合テスト
 ```
 
@@ -56,7 +53,13 @@ $ tree | manual-explain
 
 **Tips**: 複数のエントリーポイントを実装する場合は、`cmd` ディレクトリを作成し、各エントリーポイントを `cmd/{app name}/main.go` に書くと見通しが良くなります。
 
-### `core/internal/`
+### `infrastructure/database`
+
+DBスキーマの定義、DBの初期化、マイグレーションを行っています。
+
+マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っています。
+
+### `internal/`
 
 アプリケーション本体のロジックを配置します。
 主に2つのパッケージに分かれています。
@@ -73,12 +76,6 @@ $ tree | manual-explain
 
 **Tips**: `internal`パッケージは他モジュールから参照されません（参考: [Go 1.4 Release Notes](https://go.dev/doc/go1.4#internalpackages)）。
 依存性注入や外部ライブラリの初期化のみを`core/`や`pkg/`で公開し、アプリケーションのロジックは`internal/`に閉じることで、後述の`integration_tests/go.mod`などの外部モジュールからの参照を最小限にすることができ、開発の効率を上げることができます。
-
-### `core/database`
-
-DBスキーマの定義、DBの初期化、マイグレーションを行っています。
-
-マイグレーションツールは[pressly/goose](https://github.com/pressly/goose)を使っています。
 
 ### `integration_tests/`
 

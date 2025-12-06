@@ -1,6 +1,7 @@
 *
-!core/
+!infrastructure/
 !integration_tests/
+!internal/
 !go.mod
 !go.sum
 !main.go

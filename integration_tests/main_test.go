@@ -3,18 +3,17 @@ package integrationtests
 import (
 	"fmt"
 	"log"
-	"sync/atomic"
+	"net/http"
 	"testing"
-
-	"github.com/ras0q/go-backend-template/api"
-	"github.com/ras0q/go-backend-template/core"
-	"github.com/ras0q/go-backend-template/core/database"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/ory/dockertest/v3"
+	"github.com/ras0q/go-backend-template/infrastructure/config"
+	"github.com/ras0q/go-backend-template/infrastructure/database"
+	"github.com/ras0q/go-backend-template/infrastructure/injector"
 )
 
-var globalServer atomic.Pointer[api.Server]
+var globalServer http.Handler
 
 func TestMain(m *testing.M) {
 	if err := run(m); err != nil {
@@ -23,7 +22,7 @@ func TestMain(m *testing.M) {
 }
 
 func run(m *testing.M) error {
-	config := core.Config{
+	c := config.Config{
 		DBUser: "root",
 		DBPass: "pass",
 		DBHost: "localhost",
@@ -40,7 +39,7 @@ func run(m *testing.M) error {
 		return fmt.Errorf("ping docker: %w", err)
 	}
 
-	mysqlConfig := config.MySQLConfig()
+	mysqlConfig := c.MySQLConfig()
 
 	resource, err := pool.Run("mysql", "latest", []string{
 		"MYSQL_ROOT_PASSWORD=" + mysqlConfig.Passwd,
@@ -68,10 +67,12 @@ func run(m *testing.M) error {
 		return fmt.Errorf("connect to database container: %w", err)
 	}
 
-	deps := core.InjectDeps(db)
+	server, err := injector.InjectServer(db)
+	if err != nil {
+		return fmt.Errorf("inject server: %w", err)
+	}
 
-	server, err := api.NewServer(deps.Handler)
-	globalServer.Store(server)
+	globalServer = server
 
 	m.Run()
 
