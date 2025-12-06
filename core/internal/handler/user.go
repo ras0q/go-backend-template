@@ -1,118 +1,92 @@
 package handler
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 
+	"github.com/ras0q/go-backend-template/api"
 	"github.com/ras0q/go-backend-template/core/internal/repository"
 	"github.com/ras0q/go-backend-template/core/internal/services/photoapi"
 
 	vd "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
-	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 )
-
-// スキーマ定義
-type (
-	GetUsersResponse []GetUserResponse
-
-	GetUserResponse struct {
-		ID      uuid.UUID `json:"id"`
-		Name    string    `json:"name"`
-		Email   string    `json:"email"`
-		IconURL string    `json:"iconUrl"`
-	}
-
-	CreateUserRequest struct {
-		Name  string `json:"name"`
-		Email string `json:"email"`
-	}
-
-	CreateUserResponse struct {
-		ID uuid.UUID `json:"id"`
-	}
-)
-
-// GET /api/v1/users
-func (h *Handler) GetUsers(c echo.Context) error {
-	users, err := h.repo.GetUsers(c.Request().Context())
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
-	}
-
-	photo, err := photoapi.GetPhoto()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
-	}
-
-	res := make(GetUsersResponse, len(users))
-	for i, user := range users {
-		res[i] = GetUserResponse{
-			ID:      user.ID,
-			Name:    user.Name,
-			Email:   user.Email,
-			IconURL: photo.ThumbnailURL,
-		}
-	}
-
-	return c.JSON(http.StatusOK, res)
-}
 
 // POST /api/v1/users
-func (h *Handler) CreateUser(c echo.Context) error {
-	req := new(CreateUserRequest)
-	if err := c.Bind(req); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid request body").SetInternal(err)
-	}
-
+func (h *Handler) CreateUser(ctx context.Context, req *api.CreateUserReq) (*api.CreateUser, error) {
 	err := vd.ValidateStruct(
 		req,
 		vd.Field(&req.Name, vd.Required),
 		vd.Field(&req.Email, vd.Required, is.Email),
 	)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Errorf("invalid request body: %w", err)).SetInternal(err)
+		return nil, &api.ErrorStatusCode{
+			StatusCode: http.StatusBadRequest,
+			Response: api.Error{
+				Message: fmt.Sprintf("invalid request: %s", err.Error()),
+			},
+		}
 	}
 
-	userID, err := h.repo.CreateUser(c.Request().Context(), repository.CreateUserParams{
+	userID, err := h.repo.CreateUser(ctx, repository.CreateUserParams{
 		Name:  req.Name,
 		Email: req.Email,
 	})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+		return nil, fmt.Errorf("create user to repository: %w", err)
 	}
 
-	res := CreateUserResponse{
+	res := &api.CreateUser{
 		ID: userID,
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return res, nil
 }
 
 // GET /api/v1/users/:userID
-func (h *Handler) GetUser(c echo.Context) error {
-	userID, err := uuid.Parse(c.Param("userID"))
+func (h *Handler) GetUser(ctx context.Context, params api.GetUserParams) (*api.User, error) {
+	user, err := h.repo.GetUser(ctx, params.UserID)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid userID").SetInternal(err)
-	}
-
-	user, err := h.repo.GetUser(c.Request().Context(), userID)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+		return nil, fmt.Errorf("get user from repository: %w", err)
 	}
 
 	photo, err := photoapi.GetPhoto()
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError).SetInternal(err)
+		return nil, fmt.Errorf("get user icon from photoapi: %w", err)
 	}
 
-	res := GetUserResponse{
+	res := &api.User{
 		ID:      user.ID,
 		Name:    user.Name,
 		Email:   user.Email,
-		IconURL: photo.ThumbnailURL,
+		IconUrl: photo.ThumbnailURL,
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return res, nil
+}
+
+// GET /api/v1/users
+func (h *Handler) GetUsers(ctx context.Context) ([]api.User, error) {
+	users, err := h.repo.GetUsers(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("get users from repository: %w", err)
+	}
+
+	photo, err := photoapi.GetPhoto()
+	if err != nil {
+		return nil, fmt.Errorf("get user icon from photoapi: %w", err)
+	}
+
+	res := make([]api.User, 0, len(users))
+	for _, user := range users {
+		res = append(res, api.User{
+			ID:      user.ID,
+			Name:    user.Name,
+			Email:   user.Email,
+			IconUrl: photo.ThumbnailURL,
+		})
+	}
+
+	return res, nil
 }

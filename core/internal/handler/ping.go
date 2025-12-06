@@ -1,11 +1,19 @@
 package handler
 
 import (
-	"net/http"
+	"context"
+	"strings"
 
-	"github.com/labstack/echo/v4"
+	"github.com/ras0q/go-backend-template/api"
 )
 
-func (h *Handler) Ping(c echo.Context) error {
-	return c.String(http.StatusOK, "pong")
+// GET /api/v1/ping
+func (h *Handler) Ping(ctx context.Context) (api.PingOK, error) {
+	r := strings.NewReader("pong")
+
+	res := api.PingOK{
+		Data: r,
+	}
+
+	return res, nil
 }

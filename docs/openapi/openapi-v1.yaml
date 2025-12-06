@@ -1,0 +1,130 @@
+openapi: 3.1.0
+info:
+  title: Go Backend Template API
+  version: 1.0.0
+paths:
+  /api/v1/ping:
+    get:
+      summary: Ping API
+      operationId: ping
+      responses:
+        "200":
+          description: pong
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: pong
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/Error"
+  /api/v1/users:
+    get:
+      summary: Get all users
+      operationId: getUsers
+      responses:
+        "200":
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/Error"
+    post:
+      summary: Create a user
+      operationId: createUser
+      requestBody:
+        $ref: "#/components/requestBodies/CreateUser"
+      responses:
+        "200":
+          description: Created user ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/CreateUser"
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/Error"
+  /api/v1/users/{userID}:
+    get:
+      summary: Get user by ID
+      operationId: getUser
+      parameters:
+        - name: userID
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        "200":
+          description: User info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/Error"
+components:
+  requestBodies:
+    CreateUser:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              email:
+                type: string
+            required:
+              - name
+              - email
+  responses:
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+    CreateUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+      required:
+        - id
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        iconUrl:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - iconUrl

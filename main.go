@@ -2,7 +2,9 @@ package main
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/ras0q/go-backend-template/api"
 	"github.com/ras0q/go-backend-template/core"
 	"github.com/ras0q/go-backend-template/core/database"
 
@@ -37,11 +39,14 @@ func run() (err error) {
 	}
 	defer g.Guard(db.Close)
 
-	s := core.InjectDeps(db)
+	deps := core.InjectDeps(db)
 
-	core.SetupRoutes(s.Handler, e)
+	server, err := api.NewServer(deps.Handler)
+	if err != nil {
+		return err
+	}
 
-	if err := e.Start(config.AppAddr); err != nil {
+	if err := http.ListenAndServe(config.AppAddr, server); err != nil {
 		return err
 	}
 

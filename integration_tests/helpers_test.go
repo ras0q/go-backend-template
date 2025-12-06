@@ -32,7 +32,9 @@ func doRequest(t *testing.T, method, path string, bodystr string) *httptest.Resp
 	req := httptest.NewRequest(method, path, strings.NewReader(bodystr))
 	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
 	rec := httptest.NewRecorder()
-	e.ServeHTTP(rec, req)
+
+	server := globalServer.Load()
+	server.ServeHTTP(rec, req)
 
 	return rec
 }

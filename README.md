@@ -135,8 +135,6 @@ func TestUser(t *testing.T) {
 
 アプリをビルドします。
 
-requires: Build-UI
-
 ```sh
 
 CMD=server
@@ -163,8 +161,12 @@ Compose Watchにより、ソースコードの変更を検知して自動で再�
 
 全てのテストを実行します。
 
+Requires: Test-Unit, Test-Integration
+
+RunDeps: async
+
 ```sh
-go test -v -cover -race -shuffle=on ./...
+echo hello
 ```
 
 ### Test-Unit

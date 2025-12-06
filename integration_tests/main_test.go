@@ -1,20 +1,28 @@
 package integrationtests
 
 import (
+	"fmt"
+	"log"
+	"sync/atomic"
 	"testing"
 
+	"github.com/ras0q/go-backend-template/api"
 	"github.com/ras0q/go-backend-template/core"
 	"github.com/ras0q/go-backend-template/core/database"
 
 	"github.com/jmoiron/sqlx"
-	"github.com/labstack/echo/v4"
-	"github.com/labstack/gommon/log"
 	"github.com/ory/dockertest/v3"
 )
 
-var e *echo.Echo
+var globalServer atomic.Pointer[api.Server]
 
 func TestMain(m *testing.M) {
+	if err := run(m); err != nil {
+		log.Fatalf("runtime error: %+v", err)
+	}
+}
+
+func run(m *testing.M) error {
 	config := core.Config{
 		DBUser: "root",
 		DBPass: "pass",
@@ -23,16 +31,13 @@ func TestMain(m *testing.M) {
 		DBName: "app",
 	}
 
-	e = echo.New()
-	e.Logger.SetLevel(log.INFO)
-
 	pool, err := dockertest.NewPool("")
 	if err != nil {
-		e.Logger.Fatalf("connect to docker: %v", err)
+		return fmt.Errorf("connect to docker: %w", err)
 	}
 
 	if err := pool.Client.Ping(); err != nil {
-		e.Logger.Fatalf("ping docker: %v", err)
+		return fmt.Errorf("ping docker: %w", err)
 	}
 
 	mysqlConfig := config.MySQLConfig()
@@ -42,12 +47,12 @@ func TestMain(m *testing.M) {
 		"MYSQL_DATABASE=" + mysqlConfig.DBName,
 	})
 	if err != nil {
-		e.Logger.Fatalf("run docker: %v", err)
+		return fmt.Errorf("start mysql docker: %w", err)
 	}
 
 	mysqlConfig.Addr = "localhost:" + resource.GetPort("3306/tcp")
 
-	e.Logger.Info("wait for database container")
+	log.Println("wait for database container")
 
 	var db *sqlx.DB
 	if err := pool.Retry(func() error {
@@ -60,17 +65,19 @@ func TestMain(m *testing.M) {
 
 		return nil
 	}); err != nil {
-		e.Logger.Fatalf("connect to database container: %v", err)
+		return fmt.Errorf("connect to database container: %w", err)
 	}
 
-	s := core.InjectDeps(db)
+	deps := core.InjectDeps(db)
 
-	core.SetupRoutes(s.Handler, e)
+	server, err := api.NewServer(deps.Handler)
+	globalServer.Store(server)
 
-	e.Logger.Info("start integration test")
 	m.Run()
 
 	if err := pool.Purge(resource); err != nil {
-		e.Logger.Fatalf("purge docker: %v", err)
+		return fmt.Errorf("purge mysql docker: %w", err)
 	}
+
+	return nil
 }
