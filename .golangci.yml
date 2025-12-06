@@ -1,6 +1,9 @@
 version: "2"
 linters:
   enable:
+    - asasalint
+    - exhaustive
+    - exhaustruct
     - nlreturn
     - revive
   exclusions:

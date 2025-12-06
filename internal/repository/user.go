@@ -40,7 +40,7 @@ func (r *Repository) CreateUser(ctx context.Context, params CreateUserParams) (u
 }
 
 func (r *Repository) GetUser(ctx context.Context, userID uuid.UUID) (*User, error) {
-	user := &User{}
+	user := new(User)
 	if err := r.db.GetContext(ctx, user, "SELECT * FROM users WHERE id = ?", userID); err != nil {
 		return nil, fmt.Errorf("select user: %w", err)
 	}
