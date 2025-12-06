@@ -26,22 +26,22 @@ func TestUser(t *testing.T) {
 			userIDMap["user1"] = uuid.MustParse(res["id"].(string))
 		})
 
-		t.Run("invalid: email is blank", func(t *testing.T) {
+		t.Run("invalid: name is blank", func(t *testing.T) {
 			t.Parallel()
 			rec := doRequest(t, "POST", "/api/v1/users", `{"email":"test2@example.com"}`)
 
 			expectedStatus := `400 Bad Request`
-			expectedBody := `{"message":"invalid request body: name: cannot be blank."}`
+			expectedBody := `{"error_message":"operation CreateUser: decode request: decode application/json: invalid: name (field required)"}`
 			assert.Equal(t, rec.Result().Status, expectedStatus)
 			assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
 		})
 
-		t.Run("invalid: name is blank", func(t *testing.T) {
+		t.Run("invalid: email is blank", func(t *testing.T) {
 			t.Parallel()
 			rec := doRequest(t, "POST", "/api/v1/users", `{"name":"test2"}`)
 
 			expectedStatus := `400 Bad Request`
-			expectedBody := `{"message":"invalid request body: email: cannot be blank."}`
+			expectedBody := `{"error_message":"operation CreateUser: decode request: decode application/json: invalid: email (field required)"}`
 			assert.Equal(t, rec.Result().Status, expectedStatus)
 			assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
 		})
@@ -51,7 +51,7 @@ func TestUser(t *testing.T) {
 			rec := doRequest(t, "POST", "/api/v1/users", `{"name":"test2","email":"not_email"}`)
 
 			expectedStatus := `400 Bad Request`
-			expectedBody := `{"message":"invalid request body: email: must be a valid email address."}`
+			expectedBody := `{"error_message":"operation CreateUser: decode request: validate: invalid: email (string: no @)"}`
 			assert.Equal(t, rec.Result().Status, expectedStatus)
 			assert.Equal(t, escapeSnapshot(t, rec.Body.String()), expectedBody)
 		})

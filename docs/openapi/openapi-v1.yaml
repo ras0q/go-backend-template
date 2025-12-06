@@ -91,6 +91,7 @@ components:
                 type: string
               email:
                 type: string
+                format: email
             required:
               - name
               - email

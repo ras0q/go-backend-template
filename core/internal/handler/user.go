@@ -3,31 +3,13 @@ package handler
 import (
 	"context"
 	"fmt"
-	"net/http"
 
 	"github.com/ras0q/go-backend-template/api"
 	"github.com/ras0q/go-backend-template/core/internal/repository"
-
-	vd "github.com/go-ozzo/ozzo-validation"
-	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 // POST /api/v1/users
 func (h *Handler) CreateUser(ctx context.Context, req *api.CreateUserReq) (*api.CreateUser, error) {
-	err := vd.ValidateStruct(
-		req,
-		vd.Field(&req.Name, vd.Required),
-		vd.Field(&req.Email, vd.Required, is.Email),
-	)
-	if err != nil {
-		return nil, &api.ErrorStatusCode{
-			StatusCode: http.StatusBadRequest,
-			Response: api.Error{
-				Message: fmt.Sprintf("invalid request body: %s", err.Error()),
-			},
-		}
-	}
-
 	userID, err := h.repo.CreateUser(ctx, repository.CreateUserParams{
 		Name:  req.Name,
 		Email: req.Email,
