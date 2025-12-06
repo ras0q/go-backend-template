@@ -171,7 +171,7 @@ echo hello
 単体テストを実行します。
 
 ```sh
-go test -v -cover -race -shuffle=on ./core/...
+go test -v -cover -race -shuffle=on ./internal/...
 ```
 
 ### Test-Integration
