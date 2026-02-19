@@ -1,6 +1,6 @@
 # go-backend-template
 
-<a href="https://xcfile.dev"><img src="https://xcfile.dev/badge.svg" alt="xc compatible" /></a>
+[![Cute compatible](https://raw.githubusercontent.com/ras0q/cute/refs/heads/main/badge.svg)](https://github.com/ras0q/cute)
 
 ハッカソンなど短期間でWebアプリを開発する際のバックエンドのGo実装例です。
 学習コストと開発コストを抑えることを目的としています。
@@ -12,7 +12,7 @@ GitHubの `Use this template` ボタンからレポジトリを作成します�
 [`gonew`](https://pkg.go.dev/golang.org/x/tools/cmd/gonew) コマンドからでも作成できます。`gonew` コマンドを使うと、モジュール名を予め変更した状態でプロジェクトを作成することができます。
 
 ```sh
-gonew github.com/ras0q/go-backend-template {{ project_name }}
+go run golang.org/x/tools/cmd/gonew@latest github.com/ras0q/go-backend-template {{ project_name }}
 ```
 
 ## Requirements
@@ -118,22 +118,13 @@ func TestUser(t *testing.T) {
 開発に用いるコマンド一覧
 
 > [!TIP]
-> `xc` を使うことでこれらのコマンドを簡単に実行できます。
-> 詳細は以下のページをご覧ください。
->
-> - [xc](https://xcfile.dev)
-> - [MarkdownベースのGo製タスクランナー「xc」のススメ](https://zenn.dev/trap/articles/af32614c07214d)
->
-> ```bash
-> go install github.com/joerdav/xc/cmd/xc@latest
-> ```
+> [Cute](https://github.com/ras0q/cute) や [xc](https://xcfile.dev) を使うことでこれらのコマンドを簡単に実行できます。
 
 ### Build
 
 アプリをビルドします。
 
 ```sh
-
 CMD=server
 go mod download
 go build -o ./bin/${CMD} ./main.go
@@ -153,18 +144,6 @@ Compose Watchにより、ソースコードの変更を検知して自動で再�
 
 - <http://localhost:8080/> (API)
 - <http://localhost:8081/> (DBの管理画面)
-
-### Test
-
-全てのテストを実行します。
-
-Requires: Test-Unit, Test-Integration
-
-RunDeps: async
-
-```sh
-echo hello
-```
 
 ### Test-Unit
 

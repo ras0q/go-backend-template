@@ -15,8 +15,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
-      - name: Build with xc
-        run: go run github.com/joerdav/xc/cmd/xc@latest build
+      - uses: ras0q/cute@main
+        with:
+          tasks: build
 
   lint:
     name: Lint
@@ -43,8 +44,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
-      - name: Unit test with xc
-        run: go run github.com/joerdav/xc/cmd/xc@latest test-unit
+      - uses: ras0q/cute@main
+        with:
+          tasks: test-unit
 
   test-integration:
     name: Integration Test
@@ -56,8 +58,9 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version-file: ./go.mod
-      - name: Integration test with xc
-        run: go run github.com/joerdav/xc/cmd/xc@latest test-integration
+      - uses: ras0q/cute@main
+        with:
+          tasks: test-integration
 
   dependabot-automerge:
     name: Dependabot Automerge
