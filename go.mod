@@ -3,7 +3,7 @@ module github.com/ras0q/go-backend-template
 go 1.26.0
 
 require (
-	github.com/go-faster/errors v0.7.1
+	github.com/go-faster/errors v0.8.0
 	github.com/go-faster/jx v1.2.0
 	github.com/go-sql-driver/mysql v1.10.0
 	github.com/google/uuid v1.6.0
